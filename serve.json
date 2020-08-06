@@ -3,13 +3,13 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "/build"
+      "destination": "/sites/dashboard/SitePages/dhgs"
     }
   ],
   "rewrites": [
     {
-      "source": "/build/**",
-      "destination": "/build/index.html"
+      "source": "/sites/dashboard/SitePages/dhgs/**",
+      "destination": "/sites/dashboard/SitePages/dhgs/default.aspx"
     }
   ]
 }

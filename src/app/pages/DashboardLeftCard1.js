@@ -141,10 +141,10 @@ export const DashboardLeftCard1 = props => {
 					        {/* <!--begin::Chart--> */}
 					        <Carousel controls={false} indicators={false}>
                   {data.map((i) => (
-                    <Carousel.Item key={i.id}>
+                    <Carousel.Item key={i[0].id}>
                       <Row style={{padding: 5, alignItems: 'center'}}>
                       {i.map((j) => (
-                      <Col xs={9} md={6} >
+                      <Col key={j.id} xs={9} md={6} >
                         <div className="item-tk">
                       <b title={j.name}>{j.name}</b>
                         

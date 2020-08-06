@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import {useSubheader} from "../../_metronic/layout";
 import GoogleMapReact from 'google-map-react';
 import { Popover, OverlayTrigger, Tooltip, Modal, Row, Col } from 'react-bootstrap';
@@ -422,10 +422,14 @@ export const MapPage = () => {
 
   const [dataMap, setDataMap] = useState([]);
   const [active, setActive] = useState(1);
+  const [activeMenu, setActiveMenu] = useState(1);
   const [svg, setSvg] = useState("/media/svg/icons/Design/Component.svg");
   const [modal, setModal] = useState(false);
   const [modalKTXH, setModalKTXH] = useState(false);
   const [dataModal, setDataModal] = useState({});
+
+  const panelRef = useRef(null);
+  const cartRef = useRef(null);
 
   useEffect(() => {
     setDataMap(DashboardData);
@@ -527,9 +531,19 @@ export const MapPage = () => {
     };
   }, [modalKTXH]);
 
+  const setActiveMenuData = (id) => {
+    setActiveMenu(id)
+    panelRef.current.click()
+    cartRef.current.click()
+    setTimeout(() => {
+      panelRef.current.click()
+      cartRef.current.click()
+    }, 1000)
+  }
+
   return (
     <div style={{width: '100%', height: '100%'}}>
-      <AsideMenu />
+      <AsideMenu setActiveMenu={setActiveMenuData} activeMenu={activeMenu} />
       <GoogleMapReact
         bootstrapURLKeys={{ key: 'AIzaSyCV_uNEj6aSqtnz_iPHElehAWRZNEdUPqM' }}
         defaultCenter={{
@@ -543,6 +557,7 @@ export const MapPage = () => {
       >
         {dataMap.map(i => (
         <AnyReactComponent
+          key={i.id}
           lat={i.lat}
           lng={i.lng}
           item={i}
@@ -552,7 +567,7 @@ export const MapPage = () => {
         />
         ))}
       </GoogleMapReact>
-      <a className="button-toggle-left" id="kt_quick_cart_toggle">
+      <a ref={cartRef} className="button-toggle-left" id="kt_quick_cart_toggle">
         <span class="svg-icon svg-icon-primary svg-icon-2x">
         <SVG
             src={toAbsoluteUrl(
@@ -562,7 +577,7 @@ export const MapPage = () => {
         </span>
       </a>
 
-      <a className="button-toggle-right" id="kt_quick_panel_toggle">
+      <a ref={panelRef} className="button-toggle-right" id="kt_quick_panel_toggle">
         <span class="svg-icon svg-icon-primary svg-icon-2x">
         <SVG
             src={toAbsoluteUrl(

@@ -38,7 +38,7 @@ export const DashboardRightCard3 = () => {
 					        <marquee id="MARQUEE" direction="up" scrollamount="3" style={{height: 250}}>
 							<ul class="list-inline">
 								{data.map((i) => (
-									<li className="list-inline-item">
+									<li key={i.id} className="list-inline-item">
 									<b className="list-inline-item-left">{i.name}</b>
 									<div className="list-inline-item-right">
 									<p>{i.statuscode==1?"Hoạt động":"Không hoạt động"}</p>
