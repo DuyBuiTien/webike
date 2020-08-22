@@ -25,7 +25,7 @@ export const DashboardRightCard3 = () => {
 					    <div class="card-header px-2 py-0">
 					        <div class="card-title font-weight-bolder">
 					            <div class="card-label">
-					                <span class="d-block text-light font-weight-bolder">Cơ sở hạ tầng</span>
+					                <span class="d-block text-light font-weight-bolder">Lắng nghe mạng xã hội</span>
 					            </div>
 					        </div>
 					    </div>
@@ -35,25 +35,11 @@ export const DashboardRightCard3 = () => {
 					    <div class="card-body d-flex flex-column py-1 px-3">
 					        {/* <!--begin::Chart--> */}
                             <div>
-					        <marquee id="MARQUEE" direction="up" scrollamount="3" style={{height: 250}}>
-							<ul class="list-inline">
-								{data.map((i) => (
-									<li key={i.id} className="list-inline-item">
-									<b className="list-inline-item-left">{i.name}</b>
-									<div className="list-inline-item-right">
-									<p>{i.statuscode==1?"Hoạt động":"Không hoạt động"}</p>
-									<span class="svg-icon svg-icon-success svg-icon-1x">
-									<SVG
-										src={toAbsoluteUrl(
-											"/media/svg/icons/Design/Circle.svg"
-										)}
-									></SVG>
-									</span>
-									</div>
-									</li>
-								))}
-							</ul>
-							</marquee>
+								<img
+									className="d-block w-100"
+									src='https://marketingland.com/wp-content/ml-loads/2018/10/lead-1920x1080-800x450.png'
+									style={{height: 200, paddingTop: 10, borderRadius: 10}}
+								/>
                             </div>
 					        {/* <!--end::Chart--> */}
 					    </div>

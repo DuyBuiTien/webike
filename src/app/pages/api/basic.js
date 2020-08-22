@@ -7,6 +7,22 @@ export const requestGET = async(URL) => {
         method: 'GET',
         url: URL,
         timeout: 15000,
+        withCredentials: true,
+    })
+    .then(function (response) {
+        return response.data
+    })
+    .catch(function (error) {
+        console.log(error); 
+        return {data: []}
+    })
+}
+
+export const requestGET2 = async(URL) => {
+    return await instance({
+        method: 'GET',
+        url: URL,
+        timeout: 15000,
     })
     .then(function (response) {
         return response.data

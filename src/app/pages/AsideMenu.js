@@ -4,46 +4,21 @@ import {toAbsoluteUrl} from "../../_metronic/_helpers";
 import "./AsideMenu.scss";
 import clsx from "clsx";
 
-const dataMenu = [
-    {
-        "id": 1,
-        "name": "Dashboard",
-        "icon": "fa-chalkboard"
-    },
-    {
-        "id": 2,
-        "name": "Giáo dục",
-        "icon": "fa-graduation-cap"
-    },
-    {
-        "id": 3,
-        "name": "Y tế",
-        "icon": "fa-medkit"
-    },
-    {
-        "id": 4,
-        "name": "An ninh",
-        "icon": "fa-shield-alt"
-    },
-    {
-        "id": 5,
-        "name": "Giao thông",
-        "icon": "fa-traffic-light"
-    },
-    {
-        "id": 6,
-        "name": "Sở ngành",
-        "icon": "fa-stream"
-    },
-]
 
 export const AsideMenu = props => {
 
   const [active, setActive] = useState(1);
+  const [dataMenu, setDataMenu] = useState([]);
+
+  useEffect(() => {
+    setDataMenu(props.dataMenu)
+    return () => {
+      console.log('unmount Hang hoa!');
+    };
+  }, [props.dataMenu])
 
   useEffect(() => {
     setActive(props.activeMenu);
-    console.log(props.activeMenu)
     return () => {
       console.log('unmount Hang hoa!');
     };
@@ -58,16 +33,17 @@ export const AsideMenu = props => {
                         <div className="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1">
                             {/* <!--begin::Menu Nav--> */}
                             <ul className="menu-nav">
-                                {dataMenu.map((i) => (
+                                {dataMenu.map((i) => 
+                                (
                                     <li key={i.id} className={clsx("menu-item", {
                                         active: i.id === active,
                                         disable: i.id !== active
                                       })}>
                                         <a onClick={() => props.setActiveMenu(i.id)} className="menu-link">
                                             <span className="svg-icon menu-icon">
-                                                <i className={clsx("icon-xl fas", [i.icon])}></i>
+                                                <i className={clsx("icon-xl fas", [i['icon-class']])}></i>
                                             </span>
-                                            <span className="menu-text">{i.name}</span>
+                                            <span className="menu-text">{i.text}</span>
                                         </a>
                                     </li>
                                 )

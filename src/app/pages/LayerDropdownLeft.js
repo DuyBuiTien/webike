@@ -29,6 +29,7 @@ const languages = [
 export const LayerDropdownLeft = props => {
 
   const [active, setActive] = useState(0);
+  const [dataMenuChildren, setDataMenuChildren] = useState([]);
 
   useEffect(() => {
     setActive(props.active);
@@ -37,6 +38,14 @@ export const LayerDropdownLeft = props => {
       console.log('unmount Hang hoa!');
     };
   }, [props.active])
+
+  useEffect(() => {
+    setDataMenuChildren(props.dataMenuChildren);
+
+    return () => {
+      console.log('unmount Hang hoa!');
+    };
+  }, [props.dataMenuChildren])
 
   return (
     <Dropdown className="button-layer-left" drop="down">
@@ -55,24 +64,24 @@ export const LayerDropdownLeft = props => {
       </Dropdown.Toggle>
       <Dropdown.Menu className="dropdown-menu">
         <ul class="nav nav-pills">
-          {languages.map((i) => (
+          {dataMenuChildren.map((i) => (
               <li
               key={i.id}
               className={clsx("nav-link", {
                 active: i.id == active,
                 disable: i.id != active
               })}
-              onClick={() => props.setActive(i.id) + props.setSvg(i.flag)}
+              onClick={() => props.setActive(i.id)}
             >
               <OverlayTrigger
               placement="right"
               overlay={
-              <Tooltip>{i.name}</Tooltip>
+              <Tooltip>{i.text}</Tooltip>
               }
             >
                 <span class="svg-icon svg-icon-white svg-icon-3x">
                 <SVG
-                src={toAbsoluteUrl(i.flag)}
+                src={toAbsoluteUrl(i['icon-class'])}
                 ></SVG>
                 </span>
               </OverlayTrigger>

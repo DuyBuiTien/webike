@@ -176,14 +176,14 @@
             align-items: center;
             >p{
                 color: #8dc63f;
-                font-size: 9px;
+                font-size: 11px;
                 margin: 0px !important ;
                 padding-right: 5px !important;
             }
         }
         &>.list-inline-item-left {
             color: #fff;
-            font-size: 10px;
+            font-size: 12px;
         }
     }
 }
@@ -272,4 +272,8 @@
 .card-body {
     min-height: 275px !important;
     justify-content: center;
+}
+
+.iframe-bc {
+    
 }
