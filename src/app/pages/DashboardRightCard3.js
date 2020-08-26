@@ -6,7 +6,7 @@ import { Carousel, ListGroup } from 'react-bootstrap';
 import {requestPOST, requestGET} from './api/basic'
 import { CheckConnectionData } from './data/CheckConnectionData'
 
-export const DashboardRightCard3 = () => {
+export const DashboardRightCard3 = props => {
 	const [data, setData] = useState([]);
 
     useEffect(() => {
@@ -39,6 +39,7 @@ export const DashboardRightCard3 = () => {
 									className="d-block w-100"
 									src='https://marketingland.com/wp-content/ml-loads/2018/10/lead-1920x1080-800x450.png'
 									style={{height: 200, paddingTop: 10, borderRadius: 10}}
+									onClick={() => props.setModalMXH(true)}
 								/>
                             </div>
 					        {/* <!--end::Chart--> */}

@@ -25,7 +25,7 @@ export const DashboardLeftCard3 = () => {
 					    <div class="card-header px-2 py-0">
 					        <div class="card-title font-weight-bolder">
 					            <div class="card-label">
-					                <span class="d-block text-light font-weight-bolder">Theo dõi an ninh</span>
+					                <span class="d-block text-light font-weight-bolder">Theo dõi hoạt động hệ thống</span>
 					            </div>
 					        </div>
 					    </div>

@@ -55,6 +55,7 @@ export const LayerDropdownLeft = props => {
         <a>
             <span class="svg-icon svg-icon-primary svg-icon-2x">
             <SVG
+                title=" "
                 src={toAbsoluteUrl(
                     "/media/svg/icons/Design/Layers.svg"
                 )}
@@ -82,6 +83,7 @@ export const LayerDropdownLeft = props => {
                 <span class="svg-icon svg-icon-white svg-icon-3x">
                 <SVG
                 src={toAbsoluteUrl(i['icon-class'])}
+                title=" "
                 ></SVG>
                 </span>
               </OverlayTrigger>

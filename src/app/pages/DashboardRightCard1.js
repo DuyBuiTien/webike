@@ -22,20 +22,19 @@ export const DashboardRightCard1 = () => {
 
     return(
         // <!--begin::Mixed Widget 16-->
-					<div class="card card-custom mb-2">
+					<div class="card card-custom mb-4">
 					    {/* <!--begin::Header--> */}
 					    <div class="card-header px-2 py-0">
 					        <div class="card-title font-weight-bolder">
 					            <div class="card-label">
-					                <span class="d-block text-light font-weight-bolder">An toàn thông tin</span>
-                                    <div class="font-size-sm text-muted mt-2">Số liệu</div>
+					                <span class="d-block text-light font-weight-bolder">Nhắc việc cá nhân</span>
 					            </div>
 					        </div>
 					    </div>
 					    {/* <!--end::Header--> */}
 
 					    {/* <!--begin::Body--> */}
-					    <div class="card-body d-flex flex-column py-1 px-3">
+					    <div class="card-body">
 					        {/* <!--begin::Chart--> */}
 					        <div
                             id="kt_stats_widget_7_chart"

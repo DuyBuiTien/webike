@@ -215,6 +215,11 @@
     display: none;  /* Safari and Chrome */
 }
 
+.title-tk  {
+    color: #FFEB3B;
+    text-align: center;
+}
+
 .item-tk {
     border-radius: 10px;
     border: 1px solid #ebedf2;
@@ -239,7 +244,7 @@
     }
     .number-tk {
         font-size: 20px;
-        color: yellow;
+        color: #00fddb;
         font-weight: bold;
         &.small {
             font-size: 16px;
@@ -275,5 +280,78 @@
 }
 
 .iframe-bc {
+    html {
+    overflow:   scroll;
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent; /* make scrollbar transparent */
+        }
+    }
     
 }
+
+.card-header {
+    background-color: #187DE4 !important;
+    border: 0px !important ;
+}
+
+#text-card {
+    margin-bottom: 0px !important ;
+}
+.tab-content {
+    background-color: transparent !important;
+}
+
+.nav {
+    flex-wrap: nowrap !important;
+}
+
+.nav.nav-tabs .nav-item {
+    padding: 10px !important;
+    margin: 10px !important;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    background-color: #187DE4 !important;
+    border-color: transparent !important ;
+}
+
+.nav .nav-link {
+    font-size: 16px !important;
+}
+
+.nav .show > .nav-link, .nav .nav-link:hover:not(.disabled), .nav .nav-link.active {
+    color: #fff !important;
+}
+.toast-warning{
+    position: absolute;
+    top: 10px;
+    left: 450px;
+    z-index: 1;
+    width: 400px;
+    background-color: rgba($color: #000000, $alpha: 0.6) !important;
+    .toast-header{
+        background-color: rgba($color: #000000, $alpha: 0.6) !important;
+    }
+    small{
+        color: #fff !important ;
+    }
+    strong{
+        color: #fff !important ;
+    }
+    .toast-body{
+        color: #fff !important ;
+    }
+}
+
+.svg-icon {
+    &.blink {
+        animation: blinker 1s step-start infinite;
+    }
+}
+
+@keyframes blinker {
+    50% {
+      opacity: 0;
+    }
+  }

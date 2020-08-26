@@ -1,10 +1,11 @@
 import React, {useState, useEffect, useRef} from "react";
 import {useSubheader} from "../../_metronic/layout";
 import GoogleMapReact from 'google-map-react';
-import { Popover, OverlayTrigger, Tooltip, Modal, Row, Col } from 'react-bootstrap';
+import { Popover, OverlayTrigger, Tooltip, Modal, Row, Col, Tab, Tabs, Toast } from 'react-bootstrap';
 import ApexCharts from "apexcharts";
 import moment from 'moment'
-import {requestPOST, requestGET, requestGET2} from './api/basic'
+import {requestPOST, requestGET, requestGET2, requestPOSTFD, requestPOSTFCM} from './api/basic'
+import axios from 'axios'
 
 import { NamDinhData } from './data/NamDinhCityData'
 import { GiaoThuyData } from './data/GiaoThuyData'
@@ -21,6 +22,8 @@ import { EducationData } from './data/EducationData'
 import { MedicalData } from './data/MedicalData'
 
 import "./MapPage.scss";
+
+import { messaging } from "./init-fcm";
 
 import {AsideMenu} from './AsideMenu'
 import {DashboardRightCard1} from './DashboardRightCard1'
@@ -263,14 +266,12 @@ const mapStyles = [
   }
 ]
 
-const tokenCamera = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJab25lTWluZGVyIiwiaWF0IjoxNTk3OTA4NTczLCJleHAiOjE1OTc5OTQ5NzMsInVzZXIiOiJhZG1pbiIsInR5cGUiOiJhY2Nlc3MifQ.bSk1z2eZQGGag5yjXkp9KgUR14uIrX4rCWGk3TKiA1Q"
-
-
 
 const mapOptions = {
   styles: mapStyles, // straight out of something like snazzymaps
   fullscreenControl: false,
   zoomControl: false,
+  minZoom: 11
 };
 
 
@@ -429,10 +430,17 @@ export const MapPage = () => {
   const [svg, setSvg] = useState("/media/svg/icons/Design/Component.svg");
   const [modal, setModal] = useState(false);
   const [modalKTXH, setModalKTXH] = useState(false);
+  const [modalMXH, setModalMXH] = useState(false);
   const [dataModal, setDataModal] = useState({});
   const [dataMenu, setDataMenu] = useState([]);
   const [dataMenuChildren, setDataMenuChildren] = useState([]);
   const [listCamera, setListCamera] = useState([]);
+  const [tokenCamera, setTokenCamera] = useState([]);
+
+  const [warning, setWarning] = useState(false);
+  const [warningData, setWarningData] = useState({});
+  const [warningDataMap, setWarningDataMap] = useState([]);
+  const [modalWarning, setModalWarning] = useState(false);
 
   const panelRef = useRef(null);
   const cartRef = useRef(null);
@@ -450,19 +458,54 @@ export const MapPage = () => {
       });
       setDataMenuChildren(dataM[0].children)
       var code = dataM.length>0?dataM[0].children[0].code:''
-			var data1 = await requestGET(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}`)
+			var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}`)
       var data2 = data1.data?data1.data:[]
       setDataMap(data2)
-		};
-		//fetchData()
+    };
+    
+    const FCM = async() => {
+      if (messaging){
+      messaging.requestPermission()
+          .then(async function() {
+            var token = await messaging.getToken();
+            console.log(token)
+            await requestPOSTFCM(`https://iid.googleapis.com/iid/v1/${token}/rel/topics/ND_TTDH`)
+          })
+          .catch(function(err) {
+            console.log("Unable to get permission to notify.", err);
+          });
+      navigator.serviceWorker.addEventListener("message", (message) => {getWarning(message)});
+      }
+    }
+    const fetchData2 = async() => {
+      var bodyFormData = new FormData();
+      bodyFormData.append('user', 'admin');
+      bodyFormData.append('pass', 'Tandan@123');
+      var dataF = await requestPOSTFD('https://camera.tandan.com.vn/zm/api/host/login.json', bodyFormData)
+      console.log(dataF)
+      var dataFC = dataF.access_token?dataF.access_token:''
+      setTokenCamera(dataFC)
+    }
+    fetchData()
+    fetchData2()
+    FCM()
     return () => {
       console.log('unmount Hang hoa!');
     };
   }, []);
 
+  const getWarning = (message) => {
+    setWarning(true)
+    setWarningData(message.data.notification)
+    var warningDataMap1 = [...warningDataMap]
+    warningDataMap1.push(message.data.data)
+    setWarningDataMap(warningDataMap1)
+    console.log(message)
+  }
+
   useEffect(() => {
     var dataC = dataMenu.length>0?dataMenu[activeMenu].children:[]
-    var bcID = dataMenu.length>0?dataMenu[activeMenu].badge:'2036'
+    var bcID = dataMenu.length>0?dataMenu[activeMenu].badge:'2038'
     dataC.forEach((i,index) => {
       i.id = index
     });
@@ -471,7 +514,7 @@ export const MapPage = () => {
     if(active == 0){
       const fetchData = async () => {
       var code = dataMenu.length>0?dataMenu[activeMenu].children[0].code:''
-      var data1 = await requestGET(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}`)
+      var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}`)
       var data2 = data1.data?data1.data:[]
       setDataMap(data2)
     };
@@ -488,7 +531,7 @@ export const MapPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       var code = dataMenu.length>0?dataMenu[activeMenu].children[active].code:''
-			var data1 = await requestGET(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}`)
+			var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}`)
       var data2 = data1.data?data1.data:[]
       setDataMap(data2)
 		};
@@ -587,21 +630,37 @@ export const MapPage = () => {
     >
       <span onClick={() => setModal(true) + setDataModal(item) + getDataCam(item.CamGroupID)} class="svg-icon svg-icon-danger svg-icon-2x">
         <SVG
-          title=''
+          title=" "
           src={toAbsoluteUrl(svg)}
         ></SVG>
       </span>
     </OverlayTrigger>
   );
+
+  const AnyReactComponent1 = ({ item, setModalWarning}) => (
+      <span onClick={() => setModalWarning(true)} className="svg-icon blink svg-icon-danger svg-icon-2x">
+        <SVG
+          title=" "
+          src={toAbsoluteUrl("/media/svg/icons/Code/Compiling.svg")}
+        ></SVG>
+      </span>
+  );
   
   const getDataCam = async(camID) => {
-    var data1 = await requestGET(`https://camera.tandan.com.vn/zm/api/monitors/index/GroupId:${camID}/.json?token=${tokenCamera}`)
+    var data1 = await requestGET2(`https://camera.tandan.com.vn/zm/api/monitors/index/GroupId:${camID}/.json?token=${tokenCamera}`)
     var data2 = data1.monitors?data1.monitors:[]
     setListCamera(data2)
   }
 
   return (
     <div style={{width: '100%', height: '100%'}}>
+      <Toast show={warning} className='toast-warning' onClose={() => setWarning(false)} autohide>
+        <Toast.Header>
+        <strong className="mr-auto">{warningData.title}</strong>
+          <small>Bây giờ</small>
+        </Toast.Header>
+        <Toast.Body>{warningData.body}</Toast.Body>
+      </Toast>
       <AsideMenu setActiveMenu={setActiveMenuData} activeMenu={activeMenu} dataMenu={dataMenu} />
       <GoogleMapReact
         bootstrapURLKeys={{ key: 'AIzaSyCV_uNEj6aSqtnz_iPHElehAWRZNEdUPqM' }}
@@ -610,6 +669,7 @@ export const MapPage = () => {
           lng: 106.2051484,
         }}
         defaultZoom={11}
+        
         options={mapOptions}
         onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
         yesIWantToUseGoogleMapApiInternals
@@ -625,10 +685,20 @@ export const MapPage = () => {
           setDataModal={setDataModal}
         />
         ))}
+        {warningDataMap.map(i => (
+        <AnyReactComponent1
+          key={i.ID}
+          lat={i.lat}
+          lng={i.long}
+          item={i}
+          setModalWarning={setModalWarning}
+        />
+        ))}
       </GoogleMapReact>
       <a ref={cartRef} className="button-toggle-left" id="kt_quick_cart_toggle">
         <span class="svg-icon svg-icon-primary svg-icon-2x">
         <SVG
+            title=" "
             src={toAbsoluteUrl(
                 "/media/svg/icons/Layout/Layout-right-panel-2.svg"
             )}
@@ -639,14 +709,15 @@ export const MapPage = () => {
       <a ref={panelRef} className="button-toggle-right" id="kt_quick_panel_toggle">
         <span class="svg-icon svg-icon-primary svg-icon-2x">
         <SVG
-            src={toAbsoluteUrl(
-                "/media/svg/icons/Layout/Layout-right-panel-2.svg"
-            )}
+          title=" "
+          src={toAbsoluteUrl(
+              "/media/svg/icons/Layout/Layout-right-panel-2.svg"
+          )}
         ></SVG>
         </span>
       </a>
 
-      <a target="_blank" href="https://dieuhanh.namdinh.gov.vn/sites/dashboard/SitePages/ioc/default.aspx" className="button-toggle-right-2">
+      <a target="_blank" href="https://dieuhanhdev.tandan.com.vn/sites/dashboard/SitePages/ioc/default.aspx" className="button-toggle-right-2">
         <span class="svg-icon svg-icon-primary svg-icon-2x">
         <SVG
             src={toAbsoluteUrl(
@@ -657,7 +728,7 @@ export const MapPage = () => {
         </span>
       </a>
 
-      <a target="_blank" href="https://dieuhanh.namdinh.gov.vn/sites/dashboard/SitePages/default.aspx" className="button-toggle-right-3">
+      <a target="_blank" href="https://dieuhanhdev.tandan.com.vn/sites/dashboard/SitePages/dashboard.aspx" className="button-toggle-right-3">
         <span class="svg-icon svg-icon-primary svg-icon-2x">
         <SVG
             src={toAbsoluteUrl(
@@ -676,8 +747,19 @@ export const MapPage = () => {
 
         <div class="offcanvas-content">
 
-	        <div class="offcanvas-wrapper mb-5 scroll-pull" id="kt_quick_cart_logs">
-            <Component iframe={`<iframe frameborder="0" scrolling="no" class="iframe-bc" height=100% src="https://baocao.namdinh.gov.vn/_vti_bin/TD.WCF/WCFService.svc/GetUrlPublic?Token=R2F6OWpSNlpNZyswcWkrN1hpUkg2Zz09&UrlRedirect=https://baocao.namdinh.gov.vn/sites/bc_board/SitePages/dashboard.aspx#${BaoCaoID}"></iframe>`} />
+          <DashboardLeftCard1 />
+
+	        <div class="offcanvas-wrapper mb-4 scroll-pull" id="kt_quick_cart_logs">
+            <div class="card card-custom mb-4" id="text-card" >
+            <div class="card-header px-2 py-0">
+              <div class="card-title font-weight-bolder">
+                  <div class="card-label">
+                      <span class="d-block text-light font-weight-bolder">Báo cáo</span>
+                  </div>
+              </div>
+					    </div>
+              </div>
+            <Component iframe={`<iframe frameborder="0" scrolling="no" class="iframe-bc" height=100% src="https://baocao.namdinh.gov.vn/_vti_bin/TD.WCF/WCFService.svc/GetUrlPublic?Token=R2F6OWpSNlpNZyswcWkrN1hpUkg2Zz09&UrlRedirect=https://baocao.namdinh.gov.vn/sites/bc_board/SitePages/dashboard_dh.aspx#${BaoCaoID}"></iframe>`} />
           </div>
 
         </div>
@@ -692,7 +774,7 @@ export const MapPage = () => {
             
             <DashboardLeftCard3 />
 
-            <DashboardRightCard3 />
+            <DashboardRightCard3 setModalMXH={setModalMXH} />
 
             
           </div>
@@ -714,21 +796,24 @@ export const MapPage = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <b className="modal-body-title">Camera</b>
-          <Row style={{width: '100%', paddingTop: 10}}>
-            {listCamera.map((i) => (
-              <Col xs={6} md={4}>
-                <img
-                  alt=""
-                  style={{ width: '100%', height: 150 }}
-                  src={`http://camera.tandan.com.vn/zm/cgi-bin/nph-zms?mode=jpeg&maxfps=30&buffer=1000&monitor=${i.Monitor.Id}&user=admin&pass=Tandan@123`}
-                />
-              </Col>
-            ))}
-          </Row>
-          <br />
-          <b className="modal-body-title">Biểu đồ</b>
-          <Component iframe={`<iframe frameborder="0" scrolling="no" class="iframe-bc" width=100% height=900px src="https://baocao.namdinh.gov.vn/_vti_bin/TD.WCF/WCFService.svc/GetUrlPublic?Token=R2F6OWpSNlpNZyswcWkrN1hpUkg2Zz09&UrlRedirect=https://baocao.namdinh.gov.vn/sites/bc_board/SitePages/dashboard.aspx#${dataModal.BaoCaoID}"></iframe>`} />
+        <Tabs defaultActiveKey="baocao" id="controlled-tab-example">
+          <Tab eventKey="baocao" title="Tổng quan">
+            <Component iframe={`<iframe frameborder="0" scrolling="no" class="iframe-bc" width=100% height=600px src="https://baocao.namdinh.gov.vn/_vti_bin/TD.WCF/WCFService.svc/GetUrlPublic?Token=R2F6OWpSNlpNZyswcWkrN1hpUkg2Zz09&UrlRedirect=https://baocao.namdinh.gov.vn/sites/bc_board/SitePages/dashboard_dh.aspx#${dataModal.BaoCaoID}"></iframe>`} />
+          </Tab>
+          <Tab eventKey="camera" title="Camera">
+            <Row style={{width: '100%', paddingTop: 10}}>
+              {listCamera.map((i) => (
+                <Col xs={6} md={4}>
+                  <img
+                    alt=""
+                    style={{ width: '100%', height: 150 }}
+                    src={`http://camera.tandan.com.vn/zm/cgi-bin/nph-zms?mode=jpeg&maxfps=30&buffer=1000&monitor=${i.Monitor.Id}&user=admin&pass=Tandan@123`}
+                  />
+                </Col>
+              ))}
+            </Row>
+          </Tab>
+        </Tabs>
         </Modal.Body>
       </Modal>
       <Modal
@@ -777,6 +862,40 @@ export const MapPage = () => {
         </Modal.Body>
       </Modal>
     
+      <Modal
+        show={modalMXH}
+        onHide={() => setModalMXH(false)}
+        aria-labelledby="example-custom-modal-styling-title"
+        dialogClassName="modal-50w"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="example-custom-modal-styling-title">
+            Lắng nghe mạng xã hội
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Component iframe={`<iframe frameborder="0" class="iframe-bc" width=100% height=600px src="https://bacgiang.netview.vn/redirect/eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNzMzNiIsImlhdCI6MTU5NzczNzMyN30.KLUj2dY2EDpaBqWb0N-kDuAJWERCfxbu5-Mqf1pHswwAy4oUEh1D23fdCDDTSlf68NO0khFncsdE-M-hQtTQvA?navigate=common-report"></iframe>`} />
+        </Modal.Body>
+      </Modal>
+      
+      <Modal
+        show={modalWarning}
+        onHide={() => setModalWarning(false)}
+        aria-labelledby="example-custom-modal-styling-title"
+        dialogClassName="modal-50w"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="example-custom-modal-styling-title">
+            {warningData.body}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <video autoplay="autoplay" loop
+            style={{ width: '100%', height: 300 }}
+            src={`https://i1-vnexpress.vnecdn.net/2020/08/06/ezgif42ecdeb4f2a87-1596683013-9263-1596683027.gif?w=500&h=300&q=100&dpr=1&fit=crop&s=sUzprHOIVwsx0x2OwEImeg&t=video`}
+          />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
@@ -1352,3 +1471,4 @@ const getChartOption6 = () => {
   }
   return options;
 }
+//${i.Monitor.Id}${dataModal.BaoCaoID}
