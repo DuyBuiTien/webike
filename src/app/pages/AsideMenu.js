@@ -13,14 +13,12 @@ export const AsideMenu = props => {
   useEffect(() => {
     setDataMenu(props.dataMenu)
     return () => {
-      console.log('unmount Hang hoa!');
     };
   }, [props.dataMenu])
 
   useEffect(() => {
     setActive(props.activeMenu);
     return () => {
-      console.log('unmount Hang hoa!');
     };
   }, [props.activeMenu])
 

@@ -207,8 +207,25 @@
             }
             
         }
+        .modal-body{
+            .nav{
+                display: flex !important;
+                justify-content: center !important;
+            }
+            .nav-link{
+                width: 20% !important;
+            }
+            
+        }
     }
     
+}
+
+.bieuDo-tite{
+    color: #FFEB3B;
+    text-transform: none;
+    font-size: 1.1rem !important;
+    font-weight: 400 !important;
 }
 
 ::-webkit-scrollbar { 
@@ -287,16 +304,22 @@
             background: transparent; /* make scrollbar transparent */
         }
     }
-    
+    pointer-events: none;
 }
 
 .card-header {
-    background-color: #187DE4 !important;
+    background-color: transparent !important;
     border: 0px !important ;
+    span{
+        color: #187DE4 !important;
+    }
 }
 
 #text-card {
     margin-bottom: 0px !important ;
+}
+#text-card1 {
+    cursor: pointer;
 }
 .tab-content {
     background-color: transparent !important;
@@ -304,6 +327,8 @@
 
 .nav {
     flex-wrap: nowrap !important;
+    display: list-item !important;
+    margin: 7px !important;
 }
 
 .nav.nav-tabs .nav-item {
@@ -318,6 +343,13 @@
 
 .nav .nav-link {
     font-size: 16px !important;
+    &.disable {
+        opacity: 0.3;
+    }
+}
+
+.nav.nav-pills .show > .nav-link, .nav.nav-pills .nav-link.active {
+    background-color: transparent !important;
 }
 
 .nav .show > .nav-link, .nav .nav-link:hover:not(.disabled), .nav .nav-link.active {
@@ -355,3 +387,16 @@
       opacity: 0;
     }
   }
+
+#TDHT-block{
+    min-height: 100px !important ;
+}
+
+#TDAN-block{
+    min-height: 100px !important ;
+    cursor: pointer;
+}
+#canhBao-images{
+    justify-content: space-around;
+    margin: 10px
+}

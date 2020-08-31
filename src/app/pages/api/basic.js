@@ -21,6 +21,8 @@ export const config = {
     "getDataTable": "LayDanhSachDuLieu"
 };
 
+export const APIGiamSat = ["APIKNTCDieuHanh","cddh","pakn","bc"]
+
 
 export const requestGET = async(URL) => {
     return await instance({

@@ -8,24 +8,6 @@ import { DropdownTopbarItemToggler } from "../../_metronic/_partials/dropdowns";
 import SVG from "react-inlinesvg";
 import "./MapPage.scss";
 
-const languages = [
-  {
-    id: 1,
-    name: "Tổng quan",
-    flag: "/media/svg/icons/Design/Component.svg",
-  },
-  {
-    id: 2,
-    name: "Trường học",
-    flag: "/media/svg/icons/map/position.svg",
-  },
-  {
-    id: 3,
-    name: "Bệnh viện",
-    flag: "/media/svg/icons/map/marker2.svg",
-  },
-];
-
 export const LayerDropdownLeft = props => {
 
   const [active, setActive] = useState(0);
@@ -35,7 +17,6 @@ export const LayerDropdownLeft = props => {
     setActive(props.active);
 
     return () => {
-      console.log('unmount Hang hoa!');
     };
   }, [props.active])
 
@@ -43,7 +24,6 @@ export const LayerDropdownLeft = props => {
     setDataMenuChildren(props.dataMenuChildren);
 
     return () => {
-      console.log('unmount Hang hoa!');
     };
   }, [props.dataMenuChildren])
 
@@ -81,10 +61,7 @@ export const LayerDropdownLeft = props => {
               }
             >
                 <span class="svg-icon svg-icon-white svg-icon-3x">
-                <SVG
-                src={toAbsoluteUrl(i['icon-class'])}
-                title=" "
-                ></SVG>
+                <img src={i['icon-class']} />
                 </span>
               </OverlayTrigger>
               </li>

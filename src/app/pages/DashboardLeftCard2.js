@@ -10,10 +10,9 @@ export const DashboardLeftCard2 = () => {
     useEffect(() => {
 		const fetchData = async () => {
 			var body3 = {"take": 10,"urlRoot": "https://namdinh.gov.vn/","urlSpecific": "Default.aspx?sname=ubndnamdinh&sid=4&pageid=468","parentXpath": "//ul[contains(@class, 'ArticleList')]//li","titleXpath": ".//a","descriptionXpath": ".//a","imageXpath": ".//img"}
-			var data1 = await requestPOST(`https://dieuhanhdev.tandan.com.vn/_layouts/15/TD.DH.Service/WCFService.svc/crawls`, body3)
+			var data1 = await requestPOST(`https://dieuhanh.namdinh.gov.vn/_layouts/15/TD.DH.Service/WCFService.svc/crawls`, body3)
 			var dataTT = data1.data?data1.data:[]
 			setData(dataTT);
-			console.log(data1)
 		};
 		fetchData()
     }, []);
@@ -37,7 +36,7 @@ export const DashboardLeftCard2 = () => {
 					        {/* <!--begin::Chart--> */}
 					        <Carousel controls={false} indicators={false}>
 							{data.map((i) => (
-								<Carousel.Item key={i.Title}>
+								<Carousel.Item>
 									<a target="_blank" href={i.Link}>
 									<img
 										className="d-block w-100"

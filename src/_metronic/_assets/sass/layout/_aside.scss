@@ -12,7 +12,7 @@
 }
 
 // Desktop Mode
-@include media-breakpoint-up(lg) {
+@include media-breakpoint-up(xs) {
 	.aside {
 		// Fixed Aside Mode
 		.aside-fixed & {

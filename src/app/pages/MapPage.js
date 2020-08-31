@@ -4,8 +4,9 @@ import GoogleMapReact from 'google-map-react';
 import { Popover, OverlayTrigger, Tooltip, Modal, Row, Col, Tab, Tabs, Toast } from 'react-bootstrap';
 import ApexCharts from "apexcharts";
 import moment from 'moment'
-import {requestPOST, requestGET, requestGET2, requestPOSTFD, requestPOSTFCM} from './api/basic'
+import {requestPOST, requestGET, requestGET2, requestPOSTFD, requestPOSTFCM, config, requestPOSTWSO2, APIGiamSat} from './api/basic'
 import axios from 'axios'
+import clsx from "clsx";
 
 import { NamDinhData } from './data/NamDinhCityData'
 import { GiaoThuyData } from './data/GiaoThuyData'
@@ -24,6 +25,8 @@ import { MedicalData } from './data/MedicalData'
 import "./MapPage.scss";
 
 import { messaging } from "./init-fcm";
+import Cookies from 'js-cookie';
+import VideoPlayer from "./VideoPlayer"
 
 import {AsideMenu} from './AsideMenu'
 import {DashboardRightCard1} from './DashboardRightCard1'
@@ -32,6 +35,7 @@ import {DashboardLeftCard2} from './DashboardLeftCard2'
 import {DashboardLeftCard1} from './DashboardLeftCard1'
 import {DashboardRightCard3} from './DashboardRightCard3'
 import {DashboardLeftCard3} from './DashboardLeftCard3'
+import {DashboardLeftCard4} from './DashboardLeftCard4'
 import SVG from "react-inlinesvg";
 import {toAbsoluteUrl} from "../../_metronic/_helpers";
 import {LayerDropdownLeft} from './LayerDropdownLeft'
@@ -268,7 +272,7 @@ const mapStyles = [
 
 
 const mapOptions = {
-  styles: mapStyles, // straight out of something like snazzymaps
+  styles: mapStyles,
   fullscreenControl: false,
   zoomControl: false,
   minZoom: 11
@@ -429,25 +433,32 @@ export const MapPage = () => {
   const [activeMenu, setActiveMenu] = useState(0);
   const [svg, setSvg] = useState("/media/svg/icons/Design/Component.svg");
   const [modal, setModal] = useState(false);
-  const [modalKTXH, setModalKTXH] = useState(false);
+  const [modalCam, setModalCam] = useState(false);
   const [modalMXH, setModalMXH] = useState(false);
   const [dataModal, setDataModal] = useState({});
+  const [dataModalCam, setDataModalCam] = useState({});
   const [dataMenu, setDataMenu] = useState([]);
   const [dataMenuChildren, setDataMenuChildren] = useState([]);
   const [listCamera, setListCamera] = useState([]);
   const [tokenCamera, setTokenCamera] = useState([]);
 
+  const [listBieuDo, setListBieuDo] = useState([]);
+
+  const [listQH, setListQH] = useState([]);
+
   const [warning, setWarning] = useState(false);
   const [warningData, setWarningData] = useState({});
   const [warningDataMap, setWarningDataMap] = useState([]);
   const [modalWarning, setModalWarning] = useState(false);
+  const [modalWarningData, setModalWarningData] = useState({});
 
   const panelRef = useRef(null);
   const cartRef = useRef(null);
 
   useEffect(() => {
+    var tokenApi = Cookies.get("token");if(!tokenApi){tokenApi="Gaz9jR6ZMg+0qi+7XiRH6g==";}
     const fetchData = async () => {
-			var data1 = await requestGET(`https://dieuhanhdev.tandan.com.vn/bcapi/areas/asidemenus?siteUrl=https%3A%2F%2Fdieuhanhdev.tandan.com.vn%2Fsites%2Fbc_board`)
+			var data1 = await requestGET(`https://dieuhanh.namdinh.gov.vn/bcapi/areas/asidemenus?siteUrl=https%3A%2F%2Fdieuhanh.namdinh.gov.vn%2Fsites%2Fbc_board`)
       var dataM = data1.result?data1.result.items:[]
       dataM.forEach((i,index) => {
         i.id = index
@@ -468,7 +479,6 @@ export const MapPage = () => {
       messaging.requestPermission()
           .then(async function() {
             var token = await messaging.getToken();
-            console.log(token)
             await requestPOSTFCM(`https://iid.googleapis.com/iid/v1/${token}/rel/topics/ND_TTDH`)
           })
           .catch(function(err) {
@@ -478,29 +488,42 @@ export const MapPage = () => {
       }
     }
     const fetchData2 = async() => {
-      var bodyFormData = new FormData();
-      bodyFormData.append('user', 'admin');
-      bodyFormData.append('pass', 'Tandan@123');
-      var dataF = await requestPOSTFD('https://camera.tandan.com.vn/zm/api/host/login.json', bodyFormData)
-      console.log(dataF)
+      var dataF = await requestGET2('https://namdinhapi.atoma.vn:786/home/getaccesstoken?username=tandan&password=tandan123')
       var dataFC = dataF.access_token?dataF.access_token:''
       setTokenCamera(dataFC)
     }
+
+    const fetchData3 = async() => {
+      var body = {"token": tokenApi}
+      var dataAll = []
+      APIGiamSat.map(async(l) => {
+        var data1 = await requestPOSTWSO2(`${config.wso2link}${l}/LayDanhSachQHGiamSat`, body)
+        var data = data1.data?data1.data:[]
+        var arr = []
+        data.map((i) => dataAll.push(i.MaDonVi))
+      })
+      setListQH(dataAll)
+    }
+
     fetchData()
     fetchData2()
+    fetchData3()
     FCM()
     return () => {
-      console.log('unmount Hang hoa!');
     };
   }, []);
 
-  const getWarning = (message) => {
+  const getWarning = async(message) => {
+    console.log(message)
     setWarning(true)
     setWarningData(message.data.notification)
-    var warningDataMap1 = [...warningDataMap]
-    warningDataMap1.push(message.data.data)
-    setWarningDataMap(warningDataMap1)
-    console.log(message)
+    var warning = message.data.data
+    var camera = JSON.parse(warning.camera)
+    warning.lat = camera.lonlat.latitude
+    warning.lng = camera.lonlat.longitude
+    warning.title = message.data.notification.title
+    setWarningDataMap(oldArray => [...oldArray, warning]);
+    
   }
 
   useEffect(() => {
@@ -514,9 +537,11 @@ export const MapPage = () => {
     if(active == 0){
       const fetchData = async () => {
       var code = dataMenu.length>0?dataMenu[activeMenu].children[0].code:''
+      var svg =  dataMenu.length>0?dataMenu[activeMenu].children[0]['icon-class']:'media/icons/UB.png'
       var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}`)
       var data2 = data1.data?data1.data:[]
       setDataMap(data2)
+      setSvg(svg)
     };
     fetchData()
     }
@@ -524,7 +549,6 @@ export const MapPage = () => {
       setActive(0)
     }
     return () => {
-      console.log('unmount Hang hoa!');
     };
   }, [activeMenu]);
 
@@ -537,79 +561,80 @@ export const MapPage = () => {
 		};
 		fetchData()
     return () => {
-      console.log('unmount Hang hoa!');
     };
   }, [active]);
 
   useEffect(() => {
-    const element = document.getElementById("kt_stats_widget_11_chart");
+    var tokenApi = Cookies.get("token");if(!tokenApi){tokenApi="Gaz9jR6ZMg+0qi+7XiRH6g==";}
+        
+    const fetchData = async() => {
+      if(modal){
+      var body = {"token": tokenApi}
+      APIGiamSat.map(async(l) => {
+      var data1 = await requestPOSTWSO2(`${config.wso2link}${l}/LayDanhSachAPIGiamSat`, body)
+      var data = data1.data?data1.data:{}
+      if(data){
+        var bieuDo = data.bieuDo?data.bieuDo:[]
+        setListBieuDo(oldArray => [...oldArray,...bieuDo]);
+        bieuDo.map(async(i) => {
+          var element = document.getElementById(i.function);
 
-    if (!element) {
-      return;
+          if (!element) {
+            return;
+          }
+          switch (i.type) {
+            case "tron":
+              var body = {"token": tokenApi, "function": i.function, "fromDate": "2020-01-01T00:00:00", "toDate": "2020-12-31T00:00:00", "maDonVi": dataModal.MaDonVi}
+              var data1 = await requestPOSTWSO2(`${config.wso2link}${l}/LayDuLieuBieuDoTron`, body)
+              var data = data1.data?data1.data:[]
+              var serie = []
+              var label = []
+              if(data.length>0){
+                data.map((k) => {
+                  serie.push(k.value)
+                  label.push(k.category)
+                })
+                var options = getChartOption(serie,label);
+                var chart = new ApexCharts(element, options);
+                chart.render();
+              }
+              break;
+            
+            case "cot":
+              var body = {"token": tokenApi, "function": i.function, "fromDate": "2020-01-01T00:00:00", "toDate": "2020-12-31T00:00:00", "maDonVi": dataModal.MaDonVi}
+              var data1 = await requestPOSTWSO2(`${config.wso2link}${l}/LayDuLieuBieuDoCot`, body)
+              var data = data1.data?data1.data:[]
+              var serie = []
+              var label = []
+              if(data.length>0){
+                data.map((k) => {
+                  serie.push(k.value)
+                  label.push(k.category)
+                })
+                var options = getChartOption2(serie,label);
+                var chart = new ApexCharts(element, options);
+                chart.render();
+              }
+              break;
+            
+            default:
+              break;
+          }
+          
+        })
+      }
+      })
     }
-
-    const element2 = document.getElementById("kt_stats_widget_12_chart");
-
-    if (!element2) {
-      return;
+    else{
+      setListBieuDo([])
     }
-
-    const options = getChartOption();
-    const chart = new ApexCharts(element, options);
-    chart.render();
-    const options2 = getChartOption2();
-    const chart2 = new ApexCharts(element2, options2);
-    chart2.render();
+    }
+    fetchData()
     return function cleanUp() {
-      chart.destroy();
-      chart2.destroy();
+      // chart.destroy();
+      // chart2.destroy();
     };
   }, [modal]);
-
-  useEffect(() => {
-    const element3 = document.getElementById("kt_stats_widget_13_chart");
-
-    if (!element3) {
-      return;
-    }
-
-    const element4 = document.getElementById("kt_stats_widget_14_chart");
-
-    if (!element4) {
-      return;
-    }
-
-    const element5 = document.getElementById("kt_stats_widget_15_chart");
-
-    if (!element5) {
-      return;
-    }
-
-    const element6 = document.getElementById("kt_stats_widget_16_chart");
-
-    if (!element6) {
-      return;
-    }
-
-    const options3 = getChartOption3();
-    const chart3 = new ApexCharts(element3, options3);
-    chart3.render();
-    const options4 = getChartOption4();
-    const chart4 = new ApexCharts(element4, options4);
-    chart4.render();
-    const options5 = getChartOption5();
-    const chart5 = new ApexCharts(element5, options5);
-    chart5.render();
-    const options6 = getChartOption6();
-    const chart6 = new ApexCharts(element6, options6);
-    chart6.render();
-    return function cleanUp() {
-      chart3.destroy();
-      chart4.destroy();
-      chart5.destroy();
-      chart6.destroy();
-    };
-  }, [modalKTXH]);
 
   const setActiveMenuData = (id) => {
     setActiveMenu(id)
@@ -621,35 +646,57 @@ export const MapPage = () => {
     }, 1000)
   }
 
-  const AnyReactComponent = ({ item, svg, setModal, setDataModal }) => (
+  const AnyReactComponent = ({ item, svg, setModal, setDataModal, checkQH }) => (
     <OverlayTrigger
       placement="bottom"
       delay={{ show: 250, hide: 400 }}
       overlay={<Tooltip className="tooltip-item">{item.Ten}</Tooltip>
   }
     >
-      <span onClick={() => setModal(true) + setDataModal(item) + getDataCam(item.CamGroupID)} class="svg-icon svg-icon-danger svg-icon-2x">
-        <SVG
-          title=" "
-          src={toAbsoluteUrl(svg)}
-        ></SVG>
+      <span onClick={() => setModal(true) + setDataModal(item) + getDataCam(item.CamGroupID)} 
+      className={clsx("svg-icon svg-icon-2x", {
+        blink: checkQH,
+      })}
+      >
+        <img src={svg} />
       </span>
     </OverlayTrigger>
   );
 
+  const checkModalWarningData = async(item) => {
+    var images = []
+    if(item.image_path)
+    {
+      if(item.image_path.includes(".png")){
+        images.push(item.image_path)
+      }
+      else{
+        var data1 = await requestGET2(`https://namdinhapi.atoma.vn:786/files/getfilesinfolder?path=${item.image_path}`)
+        var data = data1.Results?data1.Results:[]
+        data.map((i) => i.fullpath = encodeURIComponent(i.fullpath))
+        data.map((j) => images.push(j.fullpath.replace('%5C%5C', '%5C')))
+      }
+    }
+    item.images = images
+    setModalWarningData(item)
+  }
+
   const AnyReactComponent1 = ({ item, setModalWarning}) => (
-      <span onClick={() => setModalWarning(true)} className="svg-icon blink svg-icon-danger svg-icon-2x">
-        <SVG
-          title=" "
-          src={toAbsoluteUrl("/media/svg/icons/Code/Compiling.svg")}
-        ></SVG>
+      <span onClick={() => setModalWarning(true) + checkModalWarningData(item)} className="svg-icon blink svg-icon-2x">
+        <img src="media/icons/caution.png" />
       </span>
   );
+
+  const AnyReactComponent2 = ({setModalCam, setDataModalCam, item}) => (
+    <span onClick={() => setModalCam(true) + setDataModalCam(item)} className="svg-icon svg-icon-2x">
+      <img src="media/icons/cctv.png" />
+    </span>
+);
   
   const getDataCam = async(camID) => {
-    var data1 = await requestGET2(`https://camera.tandan.com.vn/zm/api/monitors/index/GroupId:${camID}/.json?token=${tokenCamera}`)
-    var data2 = data1.monitors?data1.monitors:[]
-    setListCamera(data2)
+    // var data1 = await requestGET2(`https://camera.tandan.com.vn/zm/api/monitors/index/GroupId:${camID}/.json?token=${tokenCamera}`)
+    // var data2 = data1.monitors?data1.monitors:[]
+    // setListCamera(data2)
   }
 
   return (
@@ -683,15 +730,26 @@ export const MapPage = () => {
           svg={svg}
           setModal={setModal}
           setDataModal={setDataModal}
+          checkQH={listQH.includes(i.MaDonVi)}
         />
         ))}
-        {warningDataMap.map(i => (
+        {warningDataMap.map(j => (
         <AnyReactComponent1
-          key={i.ID}
-          lat={i.lat}
-          lng={i.long}
-          item={i}
+          key={j.ID}
+          lat={j.lat}
+          lng={j.lng}
+          item={j}
           setModalWarning={setModalWarning}
+        />
+        ))}
+        {listCamera.map(k => (
+        <AnyReactComponent2
+          key={k.id}
+          lat={k.lat}
+          lng={k.long}
+          setModalCam={setModalCam}
+          setDataModalCam={setDataModalCam}
+          item={k}
         />
         ))}
       </GoogleMapReact>
@@ -717,22 +775,11 @@ export const MapPage = () => {
         </span>
       </a>
 
-      <a target="_blank" href="https://dieuhanhdev.tandan.com.vn/sites/dashboard/SitePages/ioc/default.aspx" className="button-toggle-right-2">
+      <a target="_blank" href="https://dieuhanh.namdinh.gov.vn/sites/dashboard/SitePages/dashboard.aspx" className="button-toggle-right-2">
         <span class="svg-icon svg-icon-primary svg-icon-2x">
         <SVG
             src={toAbsoluteUrl(
-                "/media/svg/icons/General/Clipboard.svg"
-            )}
-            title="Không gian làm việc"
-        ></SVG>
-        </span>
-      </a>
-
-      <a target="_blank" href="https://dieuhanhdev.tandan.com.vn/sites/dashboard/SitePages/dashboard.aspx" className="button-toggle-right-3">
-        <span class="svg-icon svg-icon-primary svg-icon-2x">
-        <SVG
-            src={toAbsoluteUrl(
-                "/media/svg/icons/Text/Menu.svg"
+                "/media/svg/icons/Home/Home.svg"
             )}
             title="Trung tâm điều hành"
         ></SVG>
@@ -741,7 +788,7 @@ export const MapPage = () => {
 
       <LayerDropdownLeft dataMenuChildren={dataMenuChildren} setActive={setActive} active={active} setSvg={setSvg} />
 
-      {/* <LayerDropdownRight /> */}
+      <LayerDropdownRight tokenCamera={tokenCamera} setListCamera={setListCamera} setWarningDataMap={setWarningDataMap} />
       
       <div id="kt_quick_cart" className="offcanvas offcanvas-left p-0 offcanvas-on kt-quick-aside kt-quick-aside-left">
 
@@ -774,8 +821,29 @@ export const MapPage = () => {
             
             <DashboardLeftCard3 />
 
-            <DashboardRightCard3 setModalMXH={setModalMXH} />
+            <DashboardLeftCard4 tokenCamera={tokenCamera}/>
+            
+            <div class="card card-custom mb-4" id="text-card1" onClick={() => setModalMXH(true)} >
+            <div class="card-header px-2 py-0">
+              <div class="card-title font-weight-bolder">
+                  <div class="card-label">
+                    <span class="d-block text-light font-weight-bolder">Lắng nghe MXH</span>
+                  </div>
+                  <i class="fas fa-info-circle" style={{color:'#187DE4'}}></i>
+              </div>
+					    </div>
+              </div>
 
+              <div class="card card-custom mb-4" id="text-card1" onClick={() => {}} >
+            <div class="card-header px-2 py-0">
+              <div class="card-title font-weight-bolder">
+                  <div class="card-label">
+                      <span class="d-block text-light font-weight-bolder">Theo dõi an ninh mạng</span>
+                  </div>
+                  <i class="fas fa-info-circle" style={{color:'#187DE4'}}></i>
+              </div>
+					    </div>
+              </div>
             
           </div>
 
@@ -792,76 +860,32 @@ export const MapPage = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="example-custom-modal-styling-title">
-            {dataModal.name}
+            {dataModal.Ten}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
         <Tabs defaultActiveKey="baocao" id="controlled-tab-example">
-          <Tab eventKey="baocao" title="Tổng quan">
-            <Component iframe={`<iframe frameborder="0" scrolling="no" class="iframe-bc" width=100% height=600px src="https://baocao.namdinh.gov.vn/_vti_bin/TD.WCF/WCFService.svc/GetUrlPublic?Token=R2F6OWpSNlpNZyswcWkrN1hpUkg2Zz09&UrlRedirect=https://baocao.namdinh.gov.vn/sites/bc_board/SitePages/dashboard_dh.aspx#${dataModal.BaoCaoID}"></iframe>`} />
-          </Tab>
-          <Tab eventKey="camera" title="Camera">
-            <Row style={{width: '100%', paddingTop: 10}}>
-              {listCamera.map((i) => (
-                <Col xs={6} md={4}>
-                  <img
-                    alt=""
-                    style={{ width: '100%', height: 150 }}
-                    src={`http://camera.tandan.com.vn/zm/cgi-bin/nph-zms?mode=jpeg&maxfps=30&buffer=1000&monitor=${i.Monitor.Id}&user=admin&pass=Tandan@123`}
-                  />
-                </Col>
-              ))}
+          <Tab eventKey="tongquan" title="Tổng quan">
+            <Row>
+            {listBieuDo.map((i) => (
+              <Col xs={9} md={6}>
+              <h3 className="bieuDo-tite">{i.title}</h3>
+              <div
+                id={i.function}
+                className="card-rounded-bottom"
+                style={{ }}
+              ></div>
+              </Col>
+            ))}
             </Row>
+          </Tab>
+          <Tab eventKey="baocao" title="Báo cáo">
+            <Component iframe={`<iframe frameborder="0" scrolling="no" class="iframe-bc" width=100% height=600px src="https://baocao.namdinh.gov.vn/_vti_bin/TD.WCF/WCFService.svc/GetUrlPublic?Token=R2F6OWpSNlpNZyswcWkrN1hpUkg2Zz09&UrlRedirect=https://baocao.namdinh.gov.vn/sites/bc_board/SitePages/dashboard_dh.aspx#${dataModal.BaoCaoID}"></iframe>`} />
           </Tab>
         </Tabs>
         </Modal.Body>
       </Modal>
-      <Modal
-        show={modalKTXH}
-        onHide={() => setModalKTXH(false)}
-        aria-labelledby="example-custom-modal-styling-title"
-        dialogClassName="modal-50w"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="example-custom-modal-styling-title">
-            Kinh tế xã hội
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Row style={{width: '100%', padding: 5}}>
-            <Col xs={9} md={6} >
-              <div
-                id="kt_stats_widget_13_chart"
-                className="card-rounded-bottom"
-                style={{ }}
-              ></div>
-            </Col>
-            <Col xs={9} md={6} >
-              <div
-                id="kt_stats_widget_14_chart"
-                className="card-rounded-bottom"
-                style={{ }}
-              ></div>
-            </Col>
-            <Col xs={18} md={12} >
-              <div
-                id="kt_stats_widget_15_chart"
-                className="card-rounded-bottom"
-                style={{ }}
-              ></div>
-            </Col>
-            <Col xs={18} md={12} >
-              <div
-                id="kt_stats_widget_16_chart"
-                className="card-rounded-bottom"
-                style={{ }}
-              ></div>
-            </Col>
-          </Row>
-          
-        </Modal.Body>
-      </Modal>
-    
+ 
       <Modal
         show={modalMXH}
         onHide={() => setModalMXH(false)}
@@ -874,7 +898,7 @@ export const MapPage = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Component iframe={`<iframe frameborder="0" class="iframe-bc" width=100% height=600px src="https://bacgiang.netview.vn/redirect/eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNzMzNiIsImlhdCI6MTU5NzczNzMyN30.KLUj2dY2EDpaBqWb0N-kDuAJWERCfxbu5-Mqf1pHswwAy4oUEh1D23fdCDDTSlf68NO0khFncsdE-M-hQtTQvA?navigate=common-report"></iframe>`} />
+          <Component iframe={`<iframe frameborder="0" class="iframe-bc" width=100% height=600px src="https://namndinh.netview.vn/redirect/eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1NiIsImlhdCI6MTU5ODU4NDkwOX0.0uWiiu_xxtfgI4s_rU5ZW6s1Ey4di0nQiNAJ5SnjcsOmFy_MTA231c3RhssUJ8Cd-GIlho6rkMn5SFyvBRYNUw?navigate=common-report"></iframe>`} />
         </Modal.Body>
       </Modal>
       
@@ -886,589 +910,135 @@ export const MapPage = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="example-custom-modal-styling-title">
-            {warningData.body}
+            {modalWarningData.title}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <video autoplay="autoplay" loop
-            style={{ width: '100%', height: 300 }}
-            src={`https://i1-vnexpress.vnecdn.net/2020/08/06/ezgif42ecdeb4f2a87-1596683013-9263-1596683027.gif?w=500&h=300&q=100&dpr=1&fit=crop&s=sUzprHOIVwsx0x2OwEImeg&t=video`}
-          />
+          <h3 className="bieuDo-tite">Hình ảnh</h3>
+          {modalWarningData.images?
+          <div className="row" id="canhBao-images">
+          {modalWarningData.images.map((i) => (
+            <img width='30%' height={200} src={`https://namdinhapi.atoma.vn:786/files/download?path=${i}`} />
+          ))}
+          </div>
+          :<></>}
+          <h3 className="bieuDo-tite">Video</h3>
+          {modalWarningData.video_path?
+          <video autoPlay width='100%' height={300} controls src={`https://namdinhapi.atoma.vn:786/files/download?path=${encodeURIComponent(modalWarningData.video_path)}`}>
+              <source type="application/x-mpegURL" />
+          </video>
+          :<></>}
+        </Modal.Body>
+      </Modal>
+      <Modal
+        show={modalCam}
+        onHide={() => setModalCam(false)}
+        aria-labelledby="example-custom-modal-styling-title"
+        dialogClassName="modal-50w"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="example-custom-modal-styling-title">
+            {dataModalCam.name}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <VideoPlayer src={dataModalCam.m3u8_url} />
         </Modal.Body>
       </Modal>
     </div>
   );
 };
 
-const getChartOption = () => {
-  const options = {
-    series: [{
-    name: 'Tổng thu',
-    type: 'column',
-    data: [111, 132, 300, 156, 167, 182, 450, 560]
-  }, {
-    name: 'Tổng chi',
-    type: 'column',
-    data: [90, 104, 60, 112, 117, 134, 102, 250]
-  }, {
-    name: 'Tăng trưởng',
-    type: 'line',
-    data: [1.1, 3.6, 2.4, 4.5, 4.0, 5.7, 7.8, 8.0]
-  }],
-    chart: {
-      height: 250,
-      type: 'line',
-      stacked: false
-    },
-    dataLabels: {
-      enabled: false
-    },
-    stroke: {
-      width: [1, 1, 4]
-    },
-    xaxis: {
-      categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
-      labels: {
-        style: { 
-          colors: '#fff'
+const getChartOption = (serie,label) => {
+    const options = {
+      series: serie,
+      colors:['#2196F3','#f44336', '#FF9800', '#4CAF50', ],
+        chart: {
+          height: 200,
+          type: 'pie',
         },
-      }
-    },
-    yaxis: [
-      {
-        axisTicks: {
-          show: true,
-        },
-        axisBorder: {
-          show: true,
-          color: '#008FFB'
-        },
-        labels: {
-          style: {
-            colors: '#008FFB',
-          }
-        },
-        title: {
-          text: "Tổng thu (tỉ đồng)",
-          style: {
-            color: '#008FFB',
-          }
-        },
-        tooltip: {
-          enabled: true
-        }
-      },
-      {
-        seriesName: 'Tổng chi',
-        opposite: true,
-        axisTicks: {
-          show: true,
-        },
-        axisBorder: {
-          show: true,
-          color: '#00E396'
-        },
-        labels: {
-          style: {
-            colors: '#00E396',
-          }
-        },
-        title: {
-          text: "Tổng chi (tỉ đồng)",
-          style: {
-            color: '#00E396',
-          }
-        },
-      },
-      {
-        seriesName: 'Tăng trưởng',
-        opposite: true,
-        axisTicks: {
-          show: true,
-        },
-        axisBorder: {
-          show: true,
-          color: '#FEB019'
-        },
-        labels: {
-          style: {
-            colors: '#FEB019',
+        labels: label,
+        legend: {
+          position: 'right',
+          labels: {
+            colors: '#fff'
           },
-        },
-        title: {
-          text: "Tăng trưởng(%)",
-          style: {
-            color: '#FEB019',
-          }
+          horizontalAlign: 'right'
         }
-      },
-    ],
-    tooltip: {
-      fixed: {
-        enabled: true,
-        position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
-        offsetY: 30,
-        offsetX: 60
-      },
-    },
-    legend: {
-      horizontalAlign: 'left',
-      offsetX: 40,
-      labels: {
-        colors: '#fff'
-      }
     }
-  }
-  return options;
+    return options;
 }
 
-const getChartOption2 = () => {
-  const options = {
+const getChartOption2 = (serie,label) => {
+  const options = {     
     series: [{
-      data: [{
-          x: new Date(1538778600000),
-          y: [6629.81, 6650.5, 6623.04, 6633.33]
-        },
-        {
-          x: new Date(1538780400000),
-          y: [6632.01, 6643.59, 6620, 6630.11]
-        },
-        {
-          x: new Date(1538782200000),
-          y: [6630.71, 6648.95, 6623.34, 6635.65]
-        },
-        {
-          x: new Date(1538784000000),
-          y: [6635.65, 6651, 6629.67, 6638.24]
-        },
-        {
-          x: new Date(1538785800000),
-          y: [6638.24, 6640, 6620, 6624.47]
-        },
-        {
-          x: new Date(1538787600000),
-          y: [6624.53, 6636.03, 6621.68, 6624.31]
-        },
-        {
-          x: new Date(1538789400000),
-          y: [6624.61, 6632.2, 6617, 6626.02]
-        },
-        {
-          x: new Date(1538791200000),
-          y: [6627, 6627.62, 6584.22, 6603.02]
-        },
-        {
-          x: new Date(1538793000000),
-          y: [6605, 6608.03, 6598.95, 6604.01]
-        },
-        {
-          x: new Date(1538794800000),
-          y: [6604.5, 6614.4, 6602.26, 6608.02]
-        },
-        {
-          x: new Date(1538796600000),
-          y: [6608.02, 6610.68, 6601.99, 6608.91]
-        },
-        {
-          x: new Date(1538798400000),
-          y: [6608.91, 6618.99, 6608.01, 6612]
-        },
-        {
-          x: new Date(1538800200000),
-          y: [6612, 6615.13, 6605.09, 6612]
-        },
-        {
-          x: new Date(1538802000000),
-          y: [6612, 6624.12, 6608.43, 6622.95]
-        },
-        {
-          x: new Date(1538803800000),
-          y: [6623.91, 6623.91, 6615, 6615.67]
-        },
-        {
-          x: new Date(1538805600000),
-          y: [6618.69, 6618.74, 6610, 6610.4]
-        },
-        {
-          x: new Date(1538807400000),
-          y: [6611, 6622.78, 6610.4, 6614.9]
-        },
-        {
-          x: new Date(1538809200000),
-          y: [6614.9, 6626.2, 6613.33, 6623.45]
-        },
-        {
-          x: new Date(1538811000000),
-          y: [6623.48, 6627, 6618.38, 6620.35]
-        },
-        {
-          x: new Date(1538812800000),
-          y: [6619.43, 6620.35, 6610.05, 6615.53]
-        },
-        {
-          x: new Date(1538814600000),
-          y: [6615.53, 6617.93, 6610, 6615.19]
-        },
-        {
-          x: new Date(1538816400000),
-          y: [6615.19, 6621.6, 6608.2, 6620]
-        },
-        {
-          x: new Date(1538818200000),
-          y: [6619.54, 6625.17, 6614.15, 6620]
-        },
-        {
-          x: new Date(1538820000000),
-          y: [6620.33, 6634.15, 6617.24, 6624.61]
-        },
-        {
-          x: new Date(1538821800000),
-          y: [6625.95, 6626, 6611.66, 6617.58]
-        },
-        {
-          x: new Date(1538823600000),
-          y: [6619, 6625.97, 6595.27, 6598.86]
-        },
-        {
-          x: new Date(1538825400000),
-          y: [6598.86, 6598.88, 6570, 6587.16]
-        },
-        {
-          x: new Date(1538827200000),
-          y: [6588.86, 6600, 6580, 6593.4]
-        },
-        {
-          x: new Date(1538829000000),
-          y: [6593.99, 6598.89, 6585, 6587.81]
-        },
-        {
-          x: new Date(1538830800000),
-          y: [6587.81, 6592.73, 6567.14, 6578]
-        },
-        {
-          x: new Date(1538832600000),
-          y: [6578.35, 6581.72, 6567.39, 6579]
-        },
-        {
-          x: new Date(1538834400000),
-          y: [6579.38, 6580.92, 6566.77, 6575.96]
-        },
-        {
-          x: new Date(1538836200000),
-          y: [6575.96, 6589, 6571.77, 6588.92]
-        },
-        {
-          x: new Date(1538838000000),
-          y: [6588.92, 6594, 6577.55, 6589.22]
-        },
-        {
-          x: new Date(1538839800000),
-          y: [6589.3, 6598.89, 6589.1, 6596.08]
-        },
-        {
-          x: new Date(1538841600000),
-          y: [6597.5, 6600, 6588.39, 6596.25]
-        },
-        {
-          x: new Date(1538843400000),
-          y: [6598.03, 6600, 6588.73, 6595.97]
-        },
-        {
-          x: new Date(1538845200000),
-          y: [6595.97, 6602.01, 6588.17, 6602]
-        },
-        {
-          x: new Date(1538847000000),
-          y: [6602, 6607, 6596.51, 6599.95]
-        },
-        {
-          x: new Date(1538848800000),
-          y: [6600.63, 6601.21, 6590.39, 6591.02]
-        },
-        {
-          x: new Date(1538850600000),
-          y: [6591.02, 6603.08, 6591, 6591]
-        },
-        {
-          x: new Date(1538852400000),
-          y: [6591, 6601.32, 6585, 6592]
-        },
-        {
-          x: new Date(1538854200000),
-          y: [6593.13, 6596.01, 6590, 6593.34]
-        },
-        {
-          x: new Date(1538856000000),
-          y: [6593.34, 6604.76, 6582.63, 6593.86]
-        },
-        {
-          x: new Date(1538857800000),
-          y: [6593.86, 6604.28, 6586.57, 6600.01]
-        },
-        {
-          x: new Date(1538859600000),
-          y: [6601.81, 6603.21, 6592.78, 6596.25]
-        },
-        {
-          x: new Date(1538861400000),
-          y: [6596.25, 6604.2, 6590, 6602.99]
-        },
-        {
-          x: new Date(1538863200000),
-          y: [6602.99, 6606, 6584.99, 6587.81]
-        },
-        {
-          x: new Date(1538865000000),
-          y: [6587.81, 6595, 6583.27, 6591.96]
-        },
-        {
-          x: new Date(1538866800000),
-          y: [6591.97, 6596.07, 6585, 6588.39]
-        },
-        {
-          x: new Date(1538868600000),
-          y: [6587.6, 6598.21, 6587.6, 6594.27]
-        },
-        {
-          x: new Date(1538870400000),
-          y: [6596.44, 6601, 6590, 6596.55]
-        },
-        {
-          x: new Date(1538872200000),
-          y: [6598.91, 6605, 6596.61, 6600.02]
-        },
-        {
-          x: new Date(1538874000000),
-          y: [6600.55, 6605, 6589.14, 6593.01]
-        },
-        {
-          x: new Date(1538875800000),
-          y: [6593.15, 6605, 6592, 6603.06]
-        },
-        {
-          x: new Date(1538877600000),
-          y: [6603.07, 6604.5, 6599.09, 6603.89]
-        },
-        {
-          x: new Date(1538879400000),
-          y: [6604.44, 6604.44, 6600, 6603.5]
-        },
-        {
-          x: new Date(1538881200000),
-          y: [6603.5, 6603.99, 6597.5, 6603.86]
-        },
-        {
-          x: new Date(1538883000000),
-          y: [6603.85, 6605, 6600, 6604.07]
-        },
-        {
-          x: new Date(1538884800000),
-          y: [6604.98, 6606, 6604.07, 6606]
-        },
-      ]
+      name: ' ',
+      data: serie
     }],
-      chart: {
-        type: 'candlestick',
-        height: 250
-      },s: {
-        type: 'datetime'
-      },
-      yaxis: {
-        tooltip: {
-          enabled: true
-        },
-        labels: {
-          style: {
-            colors: '#fff',
-          }
-        },
-      },
-    xaxis: {
-      type: 'datetime',
-      labels: {
-        style: {
-          colors: '#fff',
-        }
-      },
-    },
-  }
-  return options;
-}
-
-const getChartOption3 = () => {
-  const options = {
-    series: [44, 55, 13],
       chart: {
         height: 250,
-        type: 'pie',
-      },
-      labels: ['Nông nghiệp', 'Công nghiệp', 'Dịch vụ'],
-      legend: {
-        position: 'left',
-        labels: {
-          colors: '#fff'
-        },
-        horizontalAlign: 'left'
-      }
-  }
-  return options;
-}
-
-const getChartOption4 = () => {
-  const options = {  
-    series: [44, 55, 41, 17, 15],
-    chart: {
-      height: 250,
-      type: 'donut',
-    },
-    legend: {
-      labels: {
-        colors: '#fff'
-      },
-      horizontalAlign: 'left'
-    },
-    labels: ['TP Nam Định', 'Huyện Hải Hậu', 'Huyện Giao Thủy', 'Huyện Mỹ Lộc', 'Huyện Nam Trực'],
-  }
-  return options;
-}
-
-const getChartOption5 = () => {
-  const options = { 
-    series: [
-      {
-        data: [
-          {
-            x: 'Huyện Trực Ninh',
-            y: [
-              new Date('2019-03-02').getTime(),
-              new Date('2019-03-04').getTime()
-            ]
-          },
-          {
-            x: 'Huyện Hải Hậu',
-            y: [
-              new Date('2019-03-04').getTime(),
-              new Date('2019-03-08').getTime()
-            ]
-          },
-          {
-            x: 'TP Nam Định',
-            y: [
-              new Date('2019-03-08').getTime(),
-              new Date('2019-03-12').getTime()
-            ]
-          },
-          {
-            x: 'Toàn tỉnh',
-            y: [
-              new Date('2019-03-12').getTime(),
-              new Date('2019-03-18').getTime()
-            ]
-          }
-        ]
-      }
-    ],
-      chart: {
-        height: 300,
-        type: 'rangeBar'
-      },
-      plotOptions: {
-        bar: {
-          horizontal: true
-        }
-      },
-      xaxis: {
-        type: 'datetime',
-        labels: {
-          style: {
-            colors: '#fff',
-          },
-          formatter: function(value, timestamp, index) {
-            return moment(new Date(value)).format("D/M")
-          }
-        },
-        
-      },
-      yaxis: {
-        labels: {
-          style: {
-            colors: '#fff',
-          },
-          
-        },
-      },
-  }
-  return options;
-}
-
-const getChartOption6 = () => {
-  const options = { 
-    series: [{
-      name: 'Huyện Vụ Bản',
-      data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
-    }, {
-      name: 'Huyện Xuân Trường',
-      data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
-    }, {
-      name: 'Huyện Ý Yên',
-      data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
-    }],
-      chart: {
         type: 'bar',
-        height: 300
       },
       plotOptions: {
         bar: {
-          horizontal: false,
-          columnWidth: '55%',
-          endingShape: 'rounded'
-        },
+          dataLabels: {
+            position: 'top', // top, center, bottom
+          },
+        }
       },
       dataLabels: {
-        enabled: false
+        enabled: true,
+        offsetY: -20,
+        style: {
+          fontSize: '10px',
+          colors: ["#fff"]
+        }
       },
-      stroke: {
-        show: true,
-        width: 2,
-        colors: ['transparent']
-      },
+      
       xaxis: {
-        categories: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10'],
-        labels: {
-          style: {
-            colors: '#fff',
+        categories: label,
+        position: 'bottom',
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        },
+        crosshairs: {
+          fill: {
+            type: 'gradient',
+            gradient: {
+              colorFrom: '#D8E3F0',
+              colorTo: '#BED1E6',
+              stops: [0, 100],
+              opacityFrom: 0.4,
+              opacityTo: 0.5,
+            }
           }
         },
+        tooltip: {
+          enabled: false,
+        },
+        labels: {
+          style: {
+            fontSize: '10px',
+            colors: "#fff"
+          }
+        }
       },
       yaxis: {
-        title: {
-          text: '$ (thousands)',
-          style: {
-            colors: '#fff',
-          }
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false,
         },
         labels: {
-          style: {
-            colors: '#fff',
-          }
-        },
-      },
-      fill: {
-        opacity: 1
-      },
-      tooltip: {
-        y: {
-          formatter: function (val) {
-            return "$ " + val + " thousands"
-          }
+          show: false,
         }
+      
       },
-      legend: {
-        labels: {
-          colors: '#fff'
-        }
-      }
   }
   return options;
 }
-//${i.Monitor.Id}${dataModal.BaoCaoID}
+
