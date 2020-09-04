@@ -2,7 +2,7 @@
     "name": "demo1",
     "version": "7.0.6",
     "private": true,
-    "homepage": "https://dieuhanh.namdinh.gov.vn/sites/dashboard/SitePages/dhgs",
+    "homepage": "https://dieuhanhubnd.hanhchinhcong.net/sites/dashboard/SitePages/dhgs",
     "scripts": {
         "start": "react-scripts start -o",
         "build": "react-scripts build",

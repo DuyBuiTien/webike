@@ -457,7 +457,7 @@ export const MapPage = () => {
   useEffect(() => {
     var tokenApi = Cookies.get("token");if(!tokenApi){tokenApi="Gaz9jR6ZMg+0qi+7XiRH6g==";}
     const fetchData = async () => {
-			var data1 = await requestGET(`https://dieuhanh.namdinh.gov.vn/bcapi/areas/asidemenus?siteUrl=https%3A%2F%2Fdieuhanh.namdinh.gov.vn%2Fsites%2Fbc_board`)
+			var data1 = await requestGET(`https://dieuhanhubnd.hanhchinhcong.net/bcapi/areas/asidemenus?siteUrl=https%3A%2F%2Fdieuhanhubnd.hanhchinhcong.net%2Fsites%2Fbc_board`)
       var dataM = data1.result?data1.result.items:[]
       dataM.forEach((i,index) => {
         i.id = index
@@ -778,7 +778,7 @@ export const MapPage = () => {
 
       <a ref={panelRefClose} className="button-close-right" id="kt_quick_panel_close"></a>
 
-      <a target="_blank" href="https://dieuhanh.namdinh.gov.vn/sites/dashboard/SitePages/dashboard.aspx" className="button-toggle-right-2">
+      <a target="_blank" href="https://dieuhanhubnd.hanhchinhcong.net/sites/dashboard/SitePages/dashboard.aspx" className="button-toggle-right-2">
         <span class="svg-icon svg-icon-primary svg-icon-2x">
         <SVG
             src={toAbsoluteUrl(
