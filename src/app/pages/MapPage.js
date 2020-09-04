@@ -496,7 +496,7 @@ export const MapPage = () => {
       var body = {"token": tokenApi}
       var dataAll = []
       APIGiamSat.map(async(l) => {
-        var data1 = await requestPOSTWSO2(`${config.wso2link}${l}/LayDanhSachQHGiamSat`, body)
+        var data1 = await requestPOSTWSO2(`${config.wso2link}${l.api}/LayDanhSachQHGiamSat`, body)
         var data = data1.data?data1.data:[]
         var arr = []
         data.map((i) => dataAll.push(i.MaDonVi))
@@ -570,21 +570,21 @@ export const MapPage = () => {
       if(modal){
       var body = {"token": tokenApi}
       APIGiamSat.map(async(l) => {
-      var data1 = await requestPOSTWSO2(`${config.wso2link}${l}/LayDanhSachAPIGiamSat`, body)
+      var data1 = await requestPOSTWSO2(`${config.wso2link}${l.api}/LayDanhSachAPIGiamSat`, body)
       var data = data1.data?data1.data:{}
       if(data){
         var bieuDo = data.bieuDo?data.bieuDo:[]
         setListBieuDo(oldArray => [...oldArray,...bieuDo]);
         bieuDo.map(async(i) => {
           var element = document.getElementById(i.function);
-
+          i.site = l.site
           if (!element) {
             return;
           }
           switch (i.type) {
             case "tron":
               var body = {"token": tokenApi, "function": i.function, "fromDate": "2020-01-01T00:00:00", "toDate": "2020-12-31T00:00:00", "maDonVi": dataModal.MaDonVi}
-              var data1 = await requestPOSTWSO2(`${config.wso2link}${l}/LayDuLieuBieuDoTron`, body)
+              var data1 = await requestPOSTWSO2(`${config.wso2link}${l.api}/LayDuLieuBieuDoTron`, body)
               var data = data1.data?data1.data:[]
               var serie = []
               var label = []
@@ -601,7 +601,7 @@ export const MapPage = () => {
             
             case "cot":
               var body = {"token": tokenApi, "function": i.function, "fromDate": "2020-01-01T00:00:00", "toDate": "2020-12-31T00:00:00", "maDonVi": dataModal.MaDonVi}
-              var data1 = await requestPOSTWSO2(`${config.wso2link}${l}/LayDuLieuBieuDoCot`, body)
+              var data1 = await requestPOSTWSO2(`${config.wso2link}${l.api}/LayDuLieuBieuDoCot`, body)
               var data = data1.data?data1.data:[]
               var serie = []
               var label = []
@@ -859,7 +859,7 @@ export const MapPage = () => {
         show={modal}
         onHide={() => setModal(false) + panelRef.current.click() + cartRef.current.click()}
         aria-labelledby="example-custom-modal-styling-title"
-        dialogClassName="modal-50w"
+        dialogClassName="modal-90w"
       >
         <Modal.Header closeButton>
           <Modal.Title id="example-custom-modal-styling-title">
@@ -871,19 +871,20 @@ export const MapPage = () => {
           <Tab eventKey="baocaodh" title="Báo cáo điều hành">
             <Row>
             {listBieuDo.map((i) => (
-              <Col xs={9} md={6}>
-              <h3 className="bieuDo-tite">{i.title}</h3>
+              <Col xs={9} md={6} >
+              <h3 style={{cursor: 'pointer'}} className="bieuDo-tite" onClick={() => {window.open(`https://dieuhanhubnd.hanhchinhcong.net/sites/dashboard/SitePages/${i.site}/default.aspx`);}}>{i.title}</h3>
               <div
                 id={i.function}
                 className="card-rounded-bottom"
                 style={{ }}
+
               ></div>
               </Col>
             ))}
             </Row>
           </Tab>
           <Tab eventKey="baocaott" title="Báo cáo trực tuyến">
-            <Component iframe={`<iframe frameborder="0" scrolling="no" class="iframe-bc" width=100% height=600px src="https://baocao.namdinh.gov.vn/_vti_bin/TD.WCF/WCFService.svc/GetUrlPublic?Token=R2F6OWpSNlpNZyswcWkrN1hpUkg2Zz09&UrlRedirect=https://baocao.namdinh.gov.vn/sites/bc_board/SitePages/dashboard_dh.aspx#${dataModal.BaoCaoID}"></iframe>`} />
+            <Component iframe={`<iframe frameborder="0" scrolling="no" class="iframe-bc-modal" width=100% height=600px src="https://baocao.namdinh.gov.vn/_vti_bin/TD.WCF/WCFService.svc/GetUrlPublic?Token=R2F6OWpSNlpNZyswcWkrN1hpUkg2Zz09&UrlRedirect=https://baocao.namdinh.gov.vn/sites/bc_board/SitePages/dashboard_dh.aspx#${dataModal.BaoCaoID}"></iframe>`} />
           </Tab>
         </Tabs>
         </Modal.Body>
@@ -893,7 +894,7 @@ export const MapPage = () => {
         show={modalMXH}
         onHide={() => setModalMXH(false)  + panelRef.current.click() + cartRef.current.click()}
         aria-labelledby="example-custom-modal-styling-title"
-        dialogClassName="modal-50w"
+        dialogClassName="modal-90w"
       >
         <Modal.Header closeButton>
           <Modal.Title id="example-custom-modal-styling-title">
@@ -909,7 +910,7 @@ export const MapPage = () => {
         show={modalWarning}
         onHide={() => setModalWarning(false)  + panelRef.current.click() + cartRef.current.click()}
         aria-labelledby="example-custom-modal-styling-title"
-        dialogClassName="modal-50w"
+        dialogClassName="modal-90w"
       >
         <Modal.Header closeButton>
           <Modal.Title id="example-custom-modal-styling-title">
@@ -937,7 +938,7 @@ export const MapPage = () => {
         show={modalCam}
         onHide={() => setModalCam(false)  + panelRef.current.click() + cartRef.current.click()}
         aria-labelledby="example-custom-modal-styling-title"
-        dialogClassName="modal-50w"
+        dialogClassName="modal-90w"
       >
         <Modal.Header closeButton>
           <Modal.Title id="example-custom-modal-styling-title">

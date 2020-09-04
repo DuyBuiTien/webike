@@ -20,15 +20,15 @@ export const DashboardLeftCard1 = props => {
           var dataAll = []
           var body = {"token": tokenApi, "isDashboard": true}
           config.api.map(async(i) => {
-            var data1 = await requestPOSTWSO2(`${config.wso2link}${i}/${config.getallAPI}`, body)
+            var data1 = await requestPOSTWSO2(`${config.wso2link}${i.api}/${config.getallAPI}`, body)
             var data = data1.data?data1.data:{}
             if(data){
               var thongKe = data.thongKe?data.thongKe:[]
               thongKe.map(async(j) => {
                 var body1 = {"token": tokenApi, "function": j.function, "fromDate": "2020-01-01T00:00:00", "toDate": "2020-12-31T00:00:00"}
-                var data2 = await requestPOSTWSO2(`${config.wso2link}${i}/${config.getDataBlock}`, body1)
+                var data2 = await requestPOSTWSO2(`${config.wso2link}${i.api}/${config.getDataBlock}`, body1)
                 var data3 = data2.data?data2.data:[]
-                dataAll.push({title: j.title, data: data3})
+                dataAll.push({title: j.title, data: data3, site: i.site})
               })
             }
           })
@@ -57,7 +57,7 @@ export const DashboardLeftCard1 = props => {
 					    <div onClick={() => {}} class="card-body d-flex flex-column py-1 px-3">
 					        <Carousel controls={false} indicators={false}>
                   {data.map((i) => (
-                    <Carousel.Item onClick={() => {window.open('https://dieuhanhubnd.hanhchinhcong.net/sites/dashboard/SitePages/dashboard.aspx');}}>
+                    <Carousel.Item style={{cursor: 'pointer'}} onClick={() => {window.open(`https://dieuhanhubnd.hanhchinhcong.net/sites/dashboard/SitePages/${i.site}/default.aspx`);}}>
                       <h4 className="title-tk">{i.title}</h4>
                       <Row style={{padding: 5, alignItems: 'center'}}>
                       
