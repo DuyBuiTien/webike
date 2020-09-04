@@ -18,9 +18,6 @@ import { TrucNinhData } from './data/TrucNinhData'
 import { VuBanData } from './data/VuBanData'
 import { XuanTruongData } from './data/XuanTruongData'
 import { YYenData } from './data/YYenData'
-import { DashboardData } from './data/DashboardData'
-import { EducationData } from './data/EducationData'
-import { MedicalData } from './data/MedicalData'
 
 import "./MapPage.scss";
 
@@ -454,11 +451,13 @@ export const MapPage = () => {
 
   const panelRef = useRef(null);
   const cartRef = useRef(null);
+  const panelRefClose = useRef(null);
+  const cartRefClose = useRef(null);
 
   useEffect(() => {
     var tokenApi = Cookies.get("token");if(!tokenApi){tokenApi="Gaz9jR6ZMg+0qi+7XiRH6g==";}
     const fetchData = async () => {
-			var data1 = await requestGET(`https://dieuhanhdev.tandan.com.vn/bcapi/areas/asidemenus?siteUrl=https%3A%2F%2Fdieuhanhdev.tandan.com.vn%2Fsites%2Fbc_board`)
+			var data1 = await requestGET(`https://dieuhanhubnd.hanhchinhcong.net/bcapi/areas/asidemenus?siteUrl=https%3A%2F%2Fdieuhanhubnd.hanhchinhcong.net%2Fsites%2Fbc_board`)
       var dataM = data1.result?data1.result.items:[]
       dataM.forEach((i,index) => {
         i.id = index
@@ -638,8 +637,8 @@ export const MapPage = () => {
 
   const setActiveMenuData = (id) => {
     setActiveMenu(id)
-    panelRef.current.click()
-    cartRef.current.click()
+    panelRefClose.current.click()
+    cartRefClose.current.click()
     setTimeout(() => {
       panelRef.current.click()
       cartRef.current.click()
@@ -653,7 +652,7 @@ export const MapPage = () => {
       overlay={<Tooltip className="tooltip-item">{item.Ten}</Tooltip>
   }
     >
-      <span onClick={() => setModal(true) + setDataModal(item) + getDataCam(item.CamGroupID)} 
+      <span onClick={() => setModal(true) + setDataModal(item) + getDataCam(item.CamGroupID) + panelRefClose.current.click() + cartRefClose.current.click()} 
       className={clsx("svg-icon svg-icon-2x", {
         blink: checkQH,
       })}
@@ -682,13 +681,13 @@ export const MapPage = () => {
   }
 
   const AnyReactComponent1 = ({ item, setModalWarning}) => (
-      <span onClick={() => setModalWarning(true) + checkModalWarningData(item)} className="svg-icon blink svg-icon-2x">
+      <span onClick={() => setModalWarning(true) + checkModalWarningData(item) + panelRefClose.current.click() + cartRefClose.current.click()} className="svg-icon blink svg-icon-2x">
         <img src="media/icons/caution.png" />
       </span>
   );
 
   const AnyReactComponent2 = ({setModalCam, setDataModalCam, item}) => (
-    <span onClick={() => setModalCam(true) + setDataModalCam(item)} className="svg-icon svg-icon-2x">
+    <span onClick={() => setModalCam(true) + setDataModalCam(item) + panelRefClose.current.click() + cartRefClose.current.click()} className="svg-icon svg-icon-2x">
       <img src="media/icons/cctv.png" />
     </span>
 );
@@ -764,6 +763,8 @@ export const MapPage = () => {
         </span>
       </a>
 
+      <a ref={cartRefClose} className="button-close-left" id="kt_quick_cart_close"></a>
+
       <a ref={panelRef} className="button-toggle-right" id="kt_quick_panel_toggle">
         <span class="svg-icon svg-icon-primary svg-icon-2x">
         <SVG
@@ -775,7 +776,9 @@ export const MapPage = () => {
         </span>
       </a>
 
-      <a target="_blank" href="https://dieuhanhdev.tandan.com.vn/sites/dashboard/SitePages/dashboard.aspx" className="button-toggle-right-2">
+      <a ref={panelRefClose} className="button-close-right" id="kt_quick_panel_close"></a>
+
+      <a target="_blank" href="https://dieuhanhubnd.hanhchinhcong.net/sites/dashboard/SitePages/dashboard.aspx" className="button-toggle-right-2">
         <span class="svg-icon svg-icon-primary svg-icon-2x">
         <SVG
             src={toAbsoluteUrl(
@@ -823,7 +826,7 @@ export const MapPage = () => {
 
             <DashboardLeftCard4 tokenCamera={tokenCamera}/>
             
-            <div class="card card-custom mb-4" id="text-card1" onClick={() => setModalMXH(true)} >
+            <div class="card card-custom mb-4" id="text-card1" onClick={() => setModalMXH(true) + panelRefClose.current.click() + cartRefClose.current.click()} >
             <div class="card-header px-2 py-0">
               <div class="card-title font-weight-bolder">
                   <div class="card-label">
@@ -854,7 +857,7 @@ export const MapPage = () => {
 
       <Modal
         show={modal}
-        onHide={() => setModal(false)}
+        onHide={() => setModal(false) + panelRef.current.click() + cartRef.current.click()}
         aria-labelledby="example-custom-modal-styling-title"
         dialogClassName="modal-50w"
       >
@@ -864,8 +867,8 @@ export const MapPage = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <Tabs defaultActiveKey="baocao" id="controlled-tab-example">
-          <Tab eventKey="tongquan" title="Tổng quan">
+        <Tabs defaultActiveKey="baocaott" id="controlled-tab-example">
+          <Tab eventKey="baocaodh" title="Báo cáo điều hành">
             <Row>
             {listBieuDo.map((i) => (
               <Col xs={9} md={6}>
@@ -879,7 +882,7 @@ export const MapPage = () => {
             ))}
             </Row>
           </Tab>
-          <Tab eventKey="baocao" title="Báo cáo">
+          <Tab eventKey="baocaott" title="Báo cáo trực tuyến">
             <Component iframe={`<iframe frameborder="0" scrolling="no" class="iframe-bc" width=100% height=600px src="https://baocao.namdinh.gov.vn/_vti_bin/TD.WCF/WCFService.svc/GetUrlPublic?Token=R2F6OWpSNlpNZyswcWkrN1hpUkg2Zz09&UrlRedirect=https://baocao.namdinh.gov.vn/sites/bc_board/SitePages/dashboard_dh.aspx#${dataModal.BaoCaoID}"></iframe>`} />
           </Tab>
         </Tabs>
@@ -888,7 +891,7 @@ export const MapPage = () => {
  
       <Modal
         show={modalMXH}
-        onHide={() => setModalMXH(false)}
+        onHide={() => setModalMXH(false)  + panelRef.current.click() + cartRef.current.click()}
         aria-labelledby="example-custom-modal-styling-title"
         dialogClassName="modal-50w"
       >
@@ -904,7 +907,7 @@ export const MapPage = () => {
       
       <Modal
         show={modalWarning}
-        onHide={() => setModalWarning(false)}
+        onHide={() => setModalWarning(false)  + panelRef.current.click() + cartRef.current.click()}
         aria-labelledby="example-custom-modal-styling-title"
         dialogClassName="modal-50w"
       >
@@ -932,7 +935,7 @@ export const MapPage = () => {
       </Modal>
       <Modal
         show={modalCam}
-        onHide={() => setModalCam(false)}
+        onHide={() => setModalCam(false)  + panelRef.current.click() + cartRef.current.click()}
         aria-labelledby="example-custom-modal-styling-title"
         dialogClassName="modal-50w"
       >
