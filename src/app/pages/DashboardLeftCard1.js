@@ -57,7 +57,7 @@ export const DashboardLeftCard1 = props => {
 					    <div onClick={() => {}} class="card-body d-flex flex-column py-1 px-3">
 					        <Carousel controls={false} indicators={false}>
                   {data.map((i) => (
-                    <Carousel.Item onClick={() => {window.open('https://dieuhanhubnd.hanhchinhcong.net/sites/dashboard/SitePages/dashboard.aspx');}}>
+                    <Carousel.Item onClick={() => {window.open('https://dieuhanh.namdinh.gov.vn/sites/dashboard/SitePages/dashboard.aspx');}}>
                       <h4 className="title-tk">{i.title}</h4>
                       <Row style={{padding: 5, alignItems: 'center'}}>
                       
