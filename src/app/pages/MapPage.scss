@@ -204,6 +204,10 @@
 .modal-dialog {
     &.modal-50w {
         max-width: 50% !important ;
+    }
+    &.modal-90w {
+        max-width: 90% !important ;
+        margin-top: 50px;
     } 
     .modal-content{
         
@@ -312,6 +316,16 @@
         }
     }
     pointer-events: none;
+}
+
+.iframe-bc-modal {
+    html {
+    overflow:   scroll;
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent; /* make scrollbar transparent */
+        }
+    }
 }
 
 .card-header {

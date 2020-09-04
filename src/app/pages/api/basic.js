@@ -7,13 +7,34 @@ export const config = {
     "beartoken": "76faf6a5-b128-3a1e-b56b-4dc290239587",
     "api": 
         [
-            "APIKNTCDieuHanh",
-            "DVCDieuHanh",
-            "pakn",
-            "cddh",
-            "APIQLCH",
-            "APIQLCB",
-            "bc"
+            {
+                "api": "APIKNTCDieuHanh",
+                "site": "kntc"
+            },
+            {
+                "api": "DVCDieuHanh",
+                "site": "kntc"
+            },
+            {
+                "api": "pakn",
+                "site": "pakn"
+            },
+            {
+                "api": "cddh",
+                "site": "cddh"
+            },
+            {
+                "api": "APIQLCH",
+                "site": "tlch"
+            },
+            {
+                "api": "APIQLCB",
+                "site": "qlcb"
+            },
+            {
+                "api": "bc",
+                "site": "ktxh"
+            },
         ],
     "getallAPI":"LayDanhSachAPIDashboard",
     "getDataBlock":"LayDuLieuThongKe",    
@@ -21,7 +42,24 @@ export const config = {
     "getDataTable": "LayDanhSachDuLieu"
 };
 
-export const APIGiamSat = ["APIKNTCDieuHanh","cddh","pakn","bc"]
+export const APIGiamSat = [
+    {
+        "api": "APIKNTCDieuHanh",
+        "site": "kntc"
+    },
+    {
+        "api": "pakn",
+        "site": "pakn"
+    },
+    {
+        "api": "cddh",
+        "site": "cddh"
+    },
+    {
+        "api": "bc",
+        "site": "ktxh"
+    },
+]
 
 
 export const requestGET = async(URL) => {
