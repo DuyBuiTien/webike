@@ -8,16 +8,17 @@ import {requestPOST, requestGET, requestGET2, requestPOSTFD, requestPOSTFCM, con
 import axios from 'axios'
 import clsx from "clsx";
 
-import { NamDinhData } from './data/NamDinhCityData'
-import { GiaoThuyData } from './data/GiaoThuyData'
-import { HaiHauData } from './data/HaiHauData'
-import { MyLocData } from './data/MyLocData'
-import { NamTrucData } from './data/NamTrucData'
-import { NghiaHungData } from './data/NghiaHungData'
-import { TrucNinhData } from './data/TrucNinhData'
-import { VuBanData } from './data/VuBanData'
-import { XuanTruongData } from './data/XuanTruongData'
-import { YYenData } from './data/YYenData'
+import { BacSonData } from './data/BacSonData'
+import { BinhGiaData } from './data/BinhGiaData'
+import { CaoLocData } from './data/CaoLocData'
+import { ChiLangData } from './data/ChiLangData'
+import { DinhLocData } from './data/DinhLocData'
+import { HuuLungData } from './data/HuuLungData'
+import { LangSonData } from './data/LangSonData'
+import { LocBinhData } from './data/LocBinhData'
+import { TrangDinhData } from './data/TrangDinhData'
+import { VanLangData } from './data/VanLangData'
+import { VanQuanData } from './data/VanQuanData'
 
 import "./MapPage.scss";
 
@@ -272,23 +273,23 @@ const mapOptions = {
   styles: mapStyles,
   fullscreenControl: false,
   zoomControl: false,
-  minZoom: 11
+  minZoom: 10
 };
 
 
 const loadPolygonMap = (data) => {
-  var namDinhCoord = []
+  var langSonCoord = []
 
   for (let index = 0; index < data.length; index++) {
     let coord = {}
     if (index % 2 == 1) {
       coord.lat = data[index]
       coord.lng = data[index + 1]
-      namDinhCoord.push(coord)
+      langSonCoord.push(coord)
     }
   }
 
-  const reversedCoords = namDinhCoord.map(ll => {
+  const reversedCoords = langSonCoord.map(ll => {
     return { lat: ll.lng, lng: ll.lat }
   });
 
@@ -297,36 +298,37 @@ const loadPolygonMap = (data) => {
 
 const handleApiLoaded = (map, maps) => {
 
-  const HaiHau = loadPolygonMap(HaiHauData)
-  const GiaoThuy = loadPolygonMap(GiaoThuyData)
-  const MyLoc = loadPolygonMap(MyLocData)
-  const NamDinh = loadPolygonMap(NamDinhData)
-  const NamTruc = loadPolygonMap(NamTrucData)
-  const NghiaHung = loadPolygonMap(NghiaHungData)
-  const TrucNinh = loadPolygonMap(TrucNinhData)
-  const VuBan = loadPolygonMap(VuBanData)
-  const XuanTruong = loadPolygonMap(XuanTruongData)
-  const YYen = loadPolygonMap(YYenData)
+  const BacSon = loadPolygonMap(BacSonData)
+  const BinhGia = loadPolygonMap(BinhGiaData)
+  const CaoLoc = loadPolygonMap(CaoLocData)
+  const ChiLang = loadPolygonMap(ChiLangData)
+  const DinhLoc = loadPolygonMap(DinhLocData)
+  const HuuLung = loadPolygonMap(HuuLungData)
+  const LangSon = loadPolygonMap(LangSonData)
+  const LocBinh = loadPolygonMap(LocBinhData)
+  const TrangDinh = loadPolygonMap(TrangDinhData)
+  const VanLang = loadPolygonMap(VanLangData)
+  const VanQuan = loadPolygonMap(VanQuanData)
 
 
-  var giaoThuy = new maps.Polygon({
-    paths: GiaoThuy,
+  var bacSon = new maps.Polygon({
+    paths: BacSon,
     strokeColor: "#f44336",
     strokeOpacity: 0.8,
     strokeWeight: 2,
     fillColor: "#e53935",
     fillOpacity: 0.35
   });
-  var haiHau = new maps.Polygon({
-    paths: HaiHau,
+  var binhGia = new maps.Polygon({
+    paths: BinhGia,
     strokeColor: "#f44336",
     strokeOpacity: 0.8,
     strokeWeight: 2,
     fillColor: "#D81B60",
     fillOpacity: 0.35
   });
-  var myLoc = new maps.Polygon({
-    paths: MyLoc,
+  var caoLoc = new maps.Polygon({
+    paths: CaoLoc,
     strokeColor: "#f44336",
     strokeOpacity: 0.8,
     strokeWeight: 2,
@@ -334,8 +336,8 @@ const handleApiLoaded = (map, maps) => {
     fillOpacity: 0.35
   });
 
-  var namDinh = new maps.Polygon({
-    paths: NamDinh,
+  var chiLang = new maps.Polygon({
+    paths: ChiLang,
     strokeColor: "#f44336",
     strokeOpacity: 0.8,
     strokeWeight: 2,
@@ -343,8 +345,8 @@ const handleApiLoaded = (map, maps) => {
     fillOpacity: 0.35
   });
 
-  var namTruc = new maps.Polygon({
-    paths: NamTruc,
+  var dinhLoc = new maps.Polygon({
+    paths: DinhLoc,
     strokeColor: "#f44336",
     strokeOpacity: 0.8,
     strokeWeight: 2,
@@ -352,8 +354,8 @@ const handleApiLoaded = (map, maps) => {
     fillOpacity: 0.35
   });
 
-  var nghiaHung = new maps.Polygon({
-    paths: NghiaHung,
+  var huuLung = new maps.Polygon({
+    paths: HuuLung,
     strokeColor: "#f44336",
     strokeOpacity: 0.8,
     strokeWeight: 2,
@@ -361,8 +363,8 @@ const handleApiLoaded = (map, maps) => {
     fillOpacity: 0.35
   });
 
-  var trucNinh = new maps.Polygon({
-    paths: TrucNinh,
+  var langSon = new maps.Polygon({
+    paths: LangSon,
     strokeColor: "#f44336",
     strokeOpacity: 0.8,
     strokeWeight: 2,
@@ -370,8 +372,8 @@ const handleApiLoaded = (map, maps) => {
     fillOpacity: 0.35
   });
 
-  var vuBan = new maps.Polygon({
-    paths: VuBan,
+  var locBinh = new maps.Polygon({
+    paths: LocBinh,
     strokeColor: "#f44336",
     strokeOpacity: 0.8,
     strokeWeight: 2,
@@ -379,8 +381,8 @@ const handleApiLoaded = (map, maps) => {
     fillOpacity: 0.35
   });
 
-  var xuanTruong = new maps.Polygon({
-    paths: XuanTruong,
+  var trangDinh = new maps.Polygon({
+    paths: TrangDinh,
     strokeColor: "#f44336",
     strokeOpacity: 0.8,
     strokeWeight: 2,
@@ -388,24 +390,34 @@ const handleApiLoaded = (map, maps) => {
     fillOpacity: 0.35
   });
 
-  var yYen = new maps.Polygon({
-    paths: YYen,
+  var vanLang = new maps.Polygon({
+    paths: VanLang,
     strokeColor: "#f44336",
     strokeOpacity: 0.8,
     strokeWeight: 2,
     fillColor: "#66BB6A",
     fillOpacity: 0.35
+  })
+
+  var vanQuan = new maps.Polygon({
+    paths: VanQuan,
+    strokeColor: "#f44336",
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: "#D4E157",
+    fillOpacity: 0.35
   });
-  giaoThuy.setMap(map);
-  haiHau.setMap(map);
-  myLoc.setMap(map);
-  namDinh.setMap(map);
-  namTruc.setMap(map);
-  nghiaHung.setMap(map);
-  trucNinh.setMap(map);
-  vuBan.setMap(map);
-  xuanTruong.setMap(map);
-  yYen.setMap(map);
+  bacSon.setMap(map);
+  binhGia.setMap(map);
+  caoLoc.setMap(map);
+  chiLang.setMap(map);
+  dinhLoc.setMap(map);
+  huuLung.setMap(map);
+  langSon.setMap(map);
+  locBinh.setMap(map);
+  trangDinh.setMap(map);
+  vanLang.setMap(map);
+  vanQuan.setMap(map);
 }
 
 const Component = () => ({
@@ -468,7 +480,7 @@ export const MapPage = () => {
       });
       setDataMenuChildren(dataM[0].children)
       var code = dataM.length>0?dataM[0].children[0].code:''
-			var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}&country=ND`)
+			var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}&country=LS`)
       var data2 = data1.data?data1.data:[]
       setDataMap(data2)
     };
@@ -537,7 +549,7 @@ export const MapPage = () => {
       const fetchData = async () => {
       var code = dataMenu.length>0?dataMenu[activeMenu].children[0].code:''
       var svg =  dataMenu.length>0?dataMenu[activeMenu].children[0]['icon-class']:'media/icons/UB.png'
-      var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}&country=ND`)
+      var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}&country=LS`)
       var data2 = data1.data?data1.data:[]
       setDataMap(data2)
       setSvg(svg)
@@ -554,7 +566,7 @@ export const MapPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       var code = dataMenu.length>0?dataMenu[activeMenu].children[active].code:''
-			var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}&country=ND`)
+			var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}&country=LS`)
       var data2 = data1.data?data1.data:[]
       setDataMap(data2)
 		};
@@ -711,10 +723,10 @@ export const MapPage = () => {
       <GoogleMapReact
         bootstrapURLKeys={{ key: 'AIzaSyCV_uNEj6aSqtnz_iPHElehAWRZNEdUPqM' }}
         defaultCenter={{
-          lat: 20.2791804,
-          lng: 106.2051484,
+          lat: 21.882999,
+          lng: 106.658878,
         }}
-        defaultZoom={11}
+        defaultZoom={10}
         
         options={mapOptions}
         onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
