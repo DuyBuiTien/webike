@@ -13,7 +13,7 @@ export const config = {
             },
             {
                 "api": "DVCDieuHanh",
-                "site": "kntc"
+                "site": "mcdt"
             },
             {
                 "api": "pakn",

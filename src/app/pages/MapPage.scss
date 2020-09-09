@@ -277,6 +277,9 @@
         &.small {
             font-size: 16px;
         }
+        &.danger {
+            color: red !important;
+        }
     }
     .percent-tk{
         display: flex;
@@ -285,6 +288,7 @@
         &.small {
             display: grid;
         }
+        
         .number{
             &.up {
                 color: #8dc63f;
@@ -420,4 +424,9 @@
 #canhBao-images{
     justify-content: space-around;
     margin: 10px
+}
+.bieuDo-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

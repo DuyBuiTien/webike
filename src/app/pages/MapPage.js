@@ -1,13 +1,15 @@
 import React, {useState, useEffect, useRef} from "react";
 import {useSubheader} from "../../_metronic/layout";
 import GoogleMapReact from 'google-map-react';
-import { Popover, OverlayTrigger, Tooltip, Modal, Row, Col, Tab, Tabs, Toast } from 'react-bootstrap';
+import { Popover, OverlayTrigger, Tooltip, Modal, Row, Col, Tab, Tabs, Toast, Form } from 'react-bootstrap';
 import ApexCharts from "apexcharts";
 import moment from 'moment'
 import {requestPOST, requestGET, requestGET2, requestPOSTFD, requestPOSTFCM, config, requestPOSTWSO2, APIGiamSat} from './api/basic'
 import axios from 'axios'
 import clsx from "clsx";
-
+import  DatePicker,{ registerLocale, setDefaultLocale } from  "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import {vi} from 'date-fns/locale';
 import { BacSonData } from './data/BacSonData'
 import { BinhGiaData } from './data/BinhGiaData'
 import { CaoLocData } from './data/CaoLocData'
@@ -434,6 +436,9 @@ const Component = () => ({
   }
 });
 
+registerLocale('vi', vi)
+setDefaultLocale('vi')
+
 export const MapPage = () => {
 
   const [dataMap, setDataMap] = useState([]);
@@ -444,6 +449,7 @@ export const MapPage = () => {
   const [modal, setModal] = useState(false);
   const [modalCam, setModalCam] = useState(false);
   const [modalMXH, setModalMXH] = useState(false);
+  const [modalCDDH, setModalCDDH] = useState(false);
   const [dataModal, setDataModal] = useState({});
   const [dataModalCam, setDataModalCam] = useState({});
   const [dataMenu, setDataMenu] = useState([]);
@@ -669,7 +675,7 @@ export const MapPage = () => {
         blink: checkQH,
       })}
       >
-        <img src={svg} />
+        {item.ID == 31?<img src='media/icons/TP.png' />:<img src={svg} />}
       </span>
     </OverlayTrigger>
   );
@@ -884,7 +890,19 @@ export const MapPage = () => {
             <Row>
             {listBieuDo.map((i) => (
               <Col xs={9} md={6} >
-              <h3 style={{cursor: 'pointer'}} className="bieuDo-tite" onClick={() => {window.open(`https://dieuhanhubnd.hanhchinhcong.net/sites/dashboard/SitePages/${i.site}/default.aspx`);}}>{i.title}</h3>
+              <div className="bieuDo-header">
+                <h3 style={{cursor: 'pointer'}} className="bieuDo-tite" onClick={() => {window.open(`https://dieuhanhubnd.hanhchinhcong.net/sites/dashboard/SitePages/${i.site}/default.aspx`);}}>{i.title}</h3>
+                <div>
+                  <span onClick={() => {}} style={{cursor: 'pointer'}} class="svg-icon svg-icon-danger svg-icon-3x">
+                  <SVG
+                      src={toAbsoluteUrl(
+                          "/media/svg/icons/Files/Share.svg"
+                      )}
+                      title="Tạo công việc"
+                  ></SVG>
+                  </span>
+                </div>
+              </div>
               <div
                 id={i.function}
                 className="card-rounded-bottom"
@@ -954,13 +972,141 @@ export const MapPage = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="example-custom-modal-styling-title">
-            {dataModalCam.name}
+            Camera
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <VideoPlayer src={dataModalCam.m3u8_url} />
         </Modal.Body>
       </Modal>
+    
+      <Modal
+        show={modalCDDH}
+        onHide={() => setModalCDDH(false)  + panelRef.current.click() + cartRef.current.click()}
+        aria-labelledby="example-custom-modal-styling-title"
+        dialogClassName="modal-90w"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="example-custom-modal-styling-title">
+            Thêm mới công việc
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h3 className="bieuDo-tite">Thông tin chung</h3>
+          <Form>
+            <Form.Row>
+              <Col>
+                <Form.Group as={Row} controlId="formPlaintextEmail">
+                  <Form.Label column sm="2">
+                    Nguồn đầu vào
+                  </Form.Label>
+                  <Col sm="6">
+                  <Form.Control as="select">
+                    <option>Phiếu giao việc</option>
+                  </Form.Control>
+                  </Col>
+                </Form.Group>
+              </Col>
+
+              <Col>
+                <Form.Group as={Row} controlId="formPlaintextPassword">
+                  <Form.Label column sm="2">
+                    Lĩnh vực
+                  </Form.Label>
+                  <Col sm="6">
+                    <Form.Control as="select">
+                      <option>--Chọn lĩnh vực--</option>
+                    </Form.Control>
+                  </Col>
+                </Form.Group>
+              </Col>
+            </Form.Row>
+            <Form.Row>
+              <Col>
+                <Form.Group as={Row} controlId="formPlaintextEmail">
+                  <Form.Label column sm="2">
+                    Nội dung công việc
+                  </Form.Label>
+                  <Col sm="6">
+                  <Form.Control as="textarea">
+                    
+                  </Form.Control>
+                  </Col>
+                </Form.Group>
+              </Col>
+
+              <Col>
+                <Form.Group as={Row} controlId="formPlaintextPassword">
+                  <Form.Label column sm="2">
+                    Hạn xử lý
+                  </Form.Label>
+                  <Col sm="6">
+                    <DatePicker st locale="vi" dateFormat="DD/MM/YYYY" />
+                  </Col>
+                </Form.Group>
+              </Col>
+            </Form.Row>
+            <Form.Row>
+              <Col>
+                <Form.Group as={Row} controlId="formPlaintextEmail">
+                  <Form.Label column sm="2">
+                    Nguồn đầu vào
+                  </Form.Label>
+                  <Col sm="6">
+                  <Form.Control as="select">
+                    <option>Phiếu giao việc</option>
+                  </Form.Control>
+                  </Col>
+                </Form.Group>
+              </Col>
+
+              <Col>
+                <Form.Group as={Row} controlId="formPlaintextPassword">
+                  <Form.Label column sm="2">
+                    Lĩnh vực
+                  </Form.Label>
+                  <Col sm="6">
+                    <Form.Control as="select">
+                      <option>--Chọn lĩnh vực--</option>
+                    </Form.Control>
+                  </Col>
+                </Form.Group>
+              </Col>
+            </Form.Row>
+          </Form>
+          <h3 className="bieuDo-tite">Chuyển xử lý</h3>
+          <Form>
+            <Form.Row>
+              <Col>
+                <Form.Group as={Row} controlId="formPlaintextEmail">
+                  <Form.Label column sm="2">
+                    Đơn vị xử lý
+                  </Form.Label>
+                  <Col sm="6">
+                  <Form.Control as="select">
+                    <option>--Chọn đơn vị--</option>
+                  </Form.Control>
+                  </Col>
+                </Form.Group>
+              </Col>
+
+              <Col>
+                <Form.Group as={Row} controlId="formPlaintextPassword">
+                  <Form.Label column sm="2">
+                    Người xử lý
+                  </Form.Label>
+                  <Col sm="6">
+                    <Form.Control as="select">
+                      <option>--Chọn người--</option>
+                    </Form.Control>
+                  </Col>
+                </Form.Group>
+              </Col>
+            </Form.Row>
+          </Form>
+        </Modal.Body>
+      </Modal>
+    
     </div>
   );
 };

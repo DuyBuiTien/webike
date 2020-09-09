@@ -66,7 +66,11 @@ export const DashboardLeftCard1 = props => {
                         <div className="item-tk">
                         <b title={j.name}>{j.title}</b>
                         <div className="percent-tk small">
-                          <span className="number-tk small">{j.value}</span>
+                          <span 
+                          className={clsx("number-tk small", {
+                            danger: j.classname === "danger",
+                          })}
+                          >{j.value}</span>
                         </div>
                         </div>
                       </Col>

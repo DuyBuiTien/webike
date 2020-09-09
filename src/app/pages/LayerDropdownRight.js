@@ -6,6 +6,7 @@ import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { toAbsoluteUrl } from "../../_metronic/_helpers";
 import { DropdownTopbarItemToggler } from "../../_metronic/_partials/dropdowns";
 import SVG from "react-inlinesvg";
+import {cameras, violates} from './data/fakeData'
 import "./MapPage.scss";
 import {requestPOST, requestGET, requestGET2, requestPOSTFD, requestPOSTFCM, config, requestPOSTWSO2, APIGiamSat} from './api/basic'
 
@@ -73,8 +74,8 @@ export const LayerDropdownRight = (props) => {
       props.setListCamera([])
     }
     else{
-      var data = await requestGET2(`https://namdinhapi.atoma.vn:786/home/getcameras?access_token=${props.tokenCamera}`)
-      var dataCam = data.cameras?data.cameras:[]
+      //var data = await requestGET2(`https://namdinhapi.atoma.vn:786/home/getcameras?access_token=${props.tokenCamera}`)
+      var dataCam = cameras
       dataCam.map((i) => {
         i.lat = i.lonlat.lat
         i.long = i.lonlat.lon
@@ -88,8 +89,8 @@ export const LayerDropdownRight = (props) => {
       props.setWarningDataMap([])
     }
     else{
-      var data = await requestGET2(`https://namdinhapi.atoma.vn:786/behavior/violate?access_token=${props.tokenCamera}`)
-      var dataViolate = data.violates?data.violates:[]
+      //var data = await requestGET2(`https://namdinhapi.atoma.vn:786/behavior/violate?access_token=${props.tokenCamera}`)
+      var dataViolate = violates
       dataViolate.map((warning) => {
         warning.lat = warning.camera.lonlat.latitude
         warning.lng = warning.camera.lonlat.longitude

@@ -9,7 +9,15 @@ export const DashboardLeftCard2 = () => {
 	const [data, setData] = useState([]);
     useEffect(() => {
 		const fetchData = async () => {
-			var body3 = {"take": 10,"urlRoot": "https://namdinh.gov.vn/","urlSpecific": "Default.aspx?sname=ubndnamdinh&sid=4&pageid=468","parentXpath": "//ul[contains(@class, 'ArticleList')]//li","titleXpath": ".//a","descriptionXpath": ".//a","imageXpath": ".//img"}
+			var body3 = {
+				"take": 10,
+				"urlRoot": "https://langson.gov.vn/",
+				"urlSpecific": "/",
+				"parentXpath": "//ol[contains(@class, 'item-list')]//li",
+				"titleXpath": ".//a",
+				"descriptionXpath": ".//a",
+				"imageXpath": ""
+			}
 			var data1 = await requestPOST(`https://dieuhanhubnd.hanhchinhcong.net/_layouts/15/TD.DH.Service/WCFService.svc/crawls`, body3)
 			var dataTT = data1.data?data1.data:[]
 			setData(dataTT);
