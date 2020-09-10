@@ -355,7 +355,7 @@ const handleApiLoaded = (map, maps) => {
   });
 
   var sonDong = new maps.Polygon({
-    paths: sonDong,
+    paths: SonDong,
     strokeColor: "#f44336",
     strokeOpacity: 0.8,
     strokeWeight: 2,
@@ -718,8 +718,8 @@ export const MapPage = () => {
       <GoogleMapReact
         bootstrapURLKeys={{ key: 'AIzaSyCV_uNEj6aSqtnz_iPHElehAWRZNEdUPqM' }}
         defaultCenter={{
-          lat: 21.882999,
-          lng: 106.658878,
+          lat: 21.279642,
+          lng: 106.169441,
         }}
         defaultZoom={10}
 
