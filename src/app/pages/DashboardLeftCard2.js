@@ -11,15 +11,16 @@ export const DashboardLeftCard2 = () => {
 		const fetchData = async () => {
 			var body3 = {
 				"take": 10,
-				"urlRoot": "https://langson.gov.vn/",
-				"urlSpecific": "/",
-				"parentXpath": "//ol[contains(@class, 'item-list')]//li",
-				"titleXpath": ".//a",
-				"descriptionXpath": ".//a",
-				"imageXpath": ""
+				"urlRoot": "https://bacgiang.gov.vn/",
+				"urlSpecific": "tin-trong-tinh",
+				"parentXpath": "//div[contains(@class, 'ul-abstract-ctn')]//div[contains(@class, 'news-line ')]",
+				"titleXpath": ".//div[contains(@class, 'news-title')]//a",
+				"descriptionXpath": ".//div[contains(@class, 'news-title')]//a",
+				"imageXpath": ".//div[contains(@class, 'news-title')]//a"
 			}
 			var data1 = await requestPOST(`https://dieuhanhubnd.hanhchinhcong.net/_layouts/15/TD.DH.Service/WCFService.svc/crawls`, body3)
 			var dataTT = data1.data?data1.data:[]
+			dataTT.map((i) => i.Link = i.Link.replace("https://bacgiang.gov.vn/https://bacgiang.gov.vn/", "https://bacgiang.gov.vn/"))
 			setData(dataTT);
 		};
 		fetchData()
