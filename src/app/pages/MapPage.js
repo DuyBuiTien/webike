@@ -457,10 +457,20 @@ export const MapPage = () => {
   const [modalWarning, setModalWarning] = useState(false);
   const [modalWarningData, setModalWarningData] = useState({});
 
+  const [latCenter, setLatCenter] = useState(21.316468)
+  const [lngCenter, setLngCenter] = useState(106.411505)
+  const [zoomCenter, setZoomCenter] = useState(10)
+
   const panelRef = useRef(null);
   const cartRef = useRef(null);
   const panelRefClose = useRef(null);
   const cartRefClose = useRef(null);
+
+  const handleCenter = (lat, lng, zoom) => {
+    setLatCenter(lat)
+    setLngCenter(lng)
+    setZoomCenter(zoom)
+  }
 
   useEffect(() => {
     var tokenApi = Cookies.get("token"); if (!tokenApi) { tokenApi = "Gaz9jR6ZMg+0qi+7XiRH6g=="; }
@@ -714,15 +724,19 @@ export const MapPage = () => {
         </Toast.Header>
         <Toast.Body>{warningData.body}</Toast.Body>
       </Toast>
-      <AsideMenu setActiveMenu={setActiveMenuData} activeMenu={activeMenu} dataMenu={dataMenu} />
+      <AsideMenu setActiveMenu={setActiveMenuData} activeMenu={activeMenu} dataMenu={dataMenu} handleCenter={handleCenter}/>
       <GoogleMapReact
         bootstrapURLKeys={{ key: 'AIzaSyCV_uNEj6aSqtnz_iPHElehAWRZNEdUPqM' }}
         defaultCenter={{
-          lat: 21.279642,
-          lng: 106.169441,
+          lat: 21.316468,
+          lng: 106.411505,
         }}
         defaultZoom={10}
-
+        center={{
+          lat: latCenter,
+          lng: lngCenter,
+        }}
+        zoom={zoomCenter}
         options={mapOptions}
         onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
         yesIWantToUseGoogleMapApiInternals
