@@ -14,7 +14,7 @@ export const DashboardLeftCard1 = props => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        var tokenApi = Cookies.get("token");if(!tokenApi){tokenApi="Gaz9jR6ZMg+0qi+7XiRH6g==";}
+        var tokenApi = Cookies.get("token");if(!tokenApi){tokenApi="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MDAwNTUzMTYsImV4cCI6MTYwMDE0MTcxNiwic3ViIjoiZGVtbzEiLCJoYXNocHdkIjoiemZDVHlhK0FQYmhPYmwvcFBTNVVYUT09IiwiY29udGV4dCI6eyJ1c2VyIjp7InVzZXJOYW1lIjoiZGVtbzEiLCJkaXNwbGF5TmFtZSI6ImRlbW8xIn19fQ.rfaWWEeXPn7aj1A4SqSVhcyB1mbbB1HsMdLAWzdWdSs";}
         
         const fetchData = async() => {
           var dataAll = []

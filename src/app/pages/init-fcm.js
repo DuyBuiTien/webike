@@ -1,16 +1,15 @@
 import * as firebase from "firebase/app";
 import "firebase/messaging";
 const initializedFirebaseApp = firebase.initializeApp({
-     // Project Settings => Add Firebase to your web app
-     apiKey: "AIzaSyAmPxTvIwRRjgbtpKeO4TW23kmTr9L4YOQ",
-    authDomain: "nd-ttdh.firebaseapp.com",
-    databaseURL: "https://nd-ttdh.firebaseio.com",
-    projectId: "nd-ttdh",
-    storageBucket: "nd-ttdh.appspot.com",
-    messagingSenderId: "63656255152",
-    appId: "1:63656255152:web:67bb774200dc0302492575",
-    measurementId: "G-GDY1QHCGFZ"
-});
+    apiKey: "AIzaSyCY1o_MOluqway0rzgp2aHYOQsxM1QhSLA",
+    authDomain: "bg-ttdh.firebaseapp.com",
+    databaseURL: "https://bg-ttdh.firebaseio.com",
+    projectId: "bg-ttdh",
+    storageBucket: "bg-ttdh.appspot.com",
+    messagingSenderId: "894401672330",
+    appId: "1:894401672330:web:77e6b29da8476f1897a973",
+    measurementId: "G-HMSH5L2D5S"
+  });
 let messaging = null
 if (firebase.messaging.isSupported()) {
     messaging = initializedFirebaseApp.messaging();

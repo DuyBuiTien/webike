@@ -8,7 +8,7 @@ import { DropdownTopbarItemToggler } from "../../_metronic/_partials/dropdowns";
 import SVG from "react-inlinesvg";
 import {cameras, violates} from './data/fakeData'
 import "./MapPage.scss";
-import {requestPOST, requestGET, requestGET2, requestPOSTFD, requestPOSTFCM, config, requestPOSTWSO2, APIGiamSat} from './api/basic'
+import {requestPOST, requestGET, requestGET2, requestPOSTFD, requestPOSTFCM, config, requestPOSTWSO2, APIGiamSat,requestGETMQ} from './api/basic'
 
 const layerRight = [
   {
@@ -26,7 +26,7 @@ const layerRight = [
 export const LayerDropdownRight = (props) => {
 
   const [active, setActive] = useState([]);
-
+  const [dataAll, setDataAll] = useState([])
   useEffect(() => {
     return () => {
     };
@@ -70,33 +70,171 @@ export const LayerDropdownRight = (props) => {
   }
 
   const toggleCamera = async(check) => {
-    if(check){
-      props.setListCamera([])
-    }
-    else{
-      //var data = await requestGET2(`https://namdinhapi.atoma.vn:786/home/getcameras?access_token=${props.tokenCamera}`)
-      var dataCam = cameras
-      dataCam.map((i) => {
-        i.lat = i.lonlat.lat
-        i.long = i.lonlat.lon
+    if (check) {
+      var dataAll_1 = [...dataAll]
+      dataAll_1.map(item => {
+        var temp = item.dataList
+        temp = temp.filter(i => i.type != 1)
+        item.dataList = temp
       })
-      props.setListCamera(dataCam)
+      dataAll_1 = dataAll_1.filter(i => i.dataList.length != 0)
+      console.log(dataAll_1)
+      setDataAll(dataAll_1)
+      props.setDataAll(dataAll_1)
+    } else {
+      var data = await requestGETMQ(
+        `https://crm.mqsolutions.vn/api/v1/cameras?offset=1&limit=10`,props.tokenCamera
+      )
+      var dataCam = data.cameras ? data.cameras : []
+      var dataAll_1 = [...dataAll]
+      var dataLonlat = []
+      dataCam.map(item => {
+        var ind = -1
+        var ob = {
+          lon:item.address.longitude,
+          lat:item.address.latitude,
+        }
+        dataLonlat.forEach(e => {
+          if (JSON.stringify(ob) === JSON.stringify(e)) {
+            ind = 0
+            return
+          }
+        })
+        if (ind == -1) {
+          dataLonlat.push(ob)
+        }
+      })
+      if (dataAll_1.length == 0) {
+        dataLonlat.map(item => {
+          var temp = []
+          var dataItem = []
+          temp = dataCam.filter(
+            e => e.address.latitude === item.lat && e.address.longitude === item.lon
+           )
+          dataItem.push({ type: 1, listItem: temp })
+          var obj = {
+            lat: item.lat,
+            lng: item.lon,
+            dataList: dataItem
+          }
+          dataAll_1.push(obj)
+        })
+      } else {
+        dataLonlat.map(item => {
+          var temp = []
+          temp = dataCam.filter(
+            e => e.address.latitude === item.lat && e.address.longitude === item.lon
+          )
+          var ind = -1
+          dataAll_1.map(i => {
+            var ob = {
+              lon: i.lng,
+              lat: i.lat
+            }
+            if (JSON.stringify(ob) === JSON.stringify(item)) {
+              i.dataList.push({ type: 1, listItem: temp })
+              ind = 0
+              return
+            }
+          })
+          if (ind == -1) {
+            var newItem = {
+              lat: item.lat,
+              lng: item.lon,
+              dataList: [{ type: 1, listItem: temp }]
+            }
+            dataAll_1.push(newItem)
+          }
+        })
+      }
+      console.log(dataAll_1)
+      setDataAll(dataAll_1)
+      props.setDataAll(dataAll_1)
     }
   }
 
   const toggleViolate = async(check) => {
-    if(check){
-      props.setWarningDataMap([])
-    }
-    else{
-      //var data = await requestGET2(`https://namdinhapi.atoma.vn:786/behavior/violate?access_token=${props.tokenCamera}`)
-      var dataViolate = violates
-      dataViolate.map((warning) => {
-        warning.lat = warning.camera.lonlat.latitude
-        warning.lng = warning.camera.lonlat.longitude
-        warning.title = warning.description
+    if (check) {
+      var dataAll_1 = [...dataAll]
+      dataAll_1.map(item => {
+        var temp = item.dataList
+        temp = temp.filter(i => i.type != 2)
+        item.dataList = temp
       })
-      props.setWarningDataMap(dataViolate)
+      dataAll_1 = dataAll_1.filter(i => i.dataList.length != 0)
+      console.log(dataAll_1)
+      setDataAll(dataAll_1)
+      props.setDataAll(dataAll_1)
+    } else {
+      var data = await requestGETMQ(
+        `https://crm.mqsolutions.vn/api/v1/events?offset=0&limit=20&cam_id=26&event_id=1`,props.tokenCamera
+      )
+      var dataViolate = data.events ? data.events : []
+      var dataAll_1 = [...dataAll]
+      var dataLonlat = []
+      dataViolate.map(item => {
+        var ind = -1
+        var ob = {
+          lon:item.longitude,
+          lat:item.latitude,
+        }
+        dataLonlat.forEach(e => {
+          if (JSON.stringify(ob) === JSON.stringify(e)) {
+            ind = 0
+            return
+          }
+        })
+        if (ind == -1) {
+          dataLonlat.push(ob)
+        }
+      })
+      if (dataAll_1.length == 0) {
+        dataLonlat.map(item => {
+          var temp = []
+          var dataItem = []
+          temp = dataViolate.filter(
+            e => e.latitude === item.lat && e.longitude === item.lon
+          )
+          dataItem.push({ type: 2, listItem: temp })
+
+          var obj = {
+            lat: item.lat,
+            lng: item.lon,
+            dataList: dataItem
+          }
+          dataAll_1.push(obj)
+        })
+      } else {
+        dataLonlat.map(item => {
+          var temp = []
+          temp = dataViolate.filter(
+            e => e.latitude === item.lat && e.longitude === item.lon
+          )
+          var ind = -1
+          dataAll_1.map(i => {
+            var ob = {
+              lon: i.lng,
+              lat: i.lat
+            }
+            if (JSON.stringify(ob) === JSON.stringify(item)) {
+              i.dataList.push({ type: 2, listItem: temp })
+              ind = 0
+              return
+            }
+          })
+          if (ind == -1) {
+            var newItem = {
+              lat: item.latitude,
+              lng: item.longitude,
+              dataList: [{ type: 2, listItem: temp }]
+            }
+            dataAll_1.push(newItem)
+          }
+        })
+      }
+      console.log(dataAll_1)
+      setDataAll(dataAll_1)
+      props.setDataAll(dataAll_1)
     }
   }
 
