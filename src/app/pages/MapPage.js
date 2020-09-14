@@ -298,7 +298,7 @@ const mapOptions = {
   styles: mapStyles,
   fullscreenControl: false,
   zoomControl: false,
-  minZoom: 11
+  minZoom: 10
 }
 
 const loadPolygonMap = data => {
@@ -512,7 +512,7 @@ export const MapPage = () => {
 
   const [latCenter, setLatCenter] = useState(21.316468)
   const [lngCenter, setLngCenter] = useState(106.411505)
-  const [zoomCenter, setZoomCenter] = useState(10)
+  const [zoomCenter, setZoomCenter] = useState(6)
 
   const panelRef = useRef(null)
   const cartRef = useRef(null)
@@ -1172,7 +1172,6 @@ export const MapPage = () => {
           lat: 21.316468,
           lng: 106.411505,
         }}
-        defaultZoom={10}
         center={{
           lat: latCenter,
           lng: lngCenter,
