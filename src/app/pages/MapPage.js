@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSubheader } from "../../_metronic/layout";
 import GoogleMapReact from 'google-map-react';
-import { Popover, OverlayTrigger, Tooltip, Modal, Row, Col, Tab, Tabs, Toast, Form } from 'react-bootstrap';
+import { Popover, OverlayTrigger, Tooltip, Modal, Row, Col, Tab, Tabs, Toast, Form, Button } from 'react-bootstrap';
 import ApexCharts from "apexcharts";
 import moment from 'moment'
 import { requestPOST, requestGET, requestGET2, requestPOSTFD, requestPOSTFCM, config, requestPOSTWSO2, APIGiamSat } from './api/basic'
@@ -9,6 +9,9 @@ import axios from 'axios'
 import clsx from "clsx";
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import * as html2canvas from 'html2canvas';
 import { vi } from 'date-fns/locale';
 import { BacGiangData } from './data/BacGiangData'
 import { HiepHoaData } from './data/HiepHoaData'
@@ -274,7 +277,7 @@ const mapOptions = {
   styles: mapStyles,
   fullscreenControl: false,
   zoomControl: false,
-  minZoom: 10
+  minZoom: 11
 };
 
 
@@ -428,6 +431,7 @@ const Component = () => ({
 
 registerLocale('vi', vi)
 setDefaultLocale('vi')
+moment.locale('vi')
 
 export const MapPage = () => {
 
@@ -446,6 +450,32 @@ export const MapPage = () => {
   const [dataMenuChildren, setDataMenuChildren] = useState([]);
   const [listCamera, setListCamera] = useState([]);
   const [tokenCamera, setTokenCamera] = useState([]);
+  const [token, setToken] = useState('');
+
+  const [dataNDV, setDataNDV] = useState([]);
+  const [dataLV, setDataLV] = useState([]);
+  const [dataUser, setDataUser] = useState([]);
+  const [dataGroup, setDataGroup] = useState([]);
+  const [NDV, setNDV] = useState('');
+  const [NDVText, setNDVText] = useState('');
+  const [LV, setLV] = useState('');
+  const [LVText, setLVText] = useState('');
+  const [DVXL, setDVXL] = useState('');
+  const [DVXLText, setDVXLText] = useState('');
+  const [NXL, setNXL] = useState('');
+  const [NXLText, setNXLText] = useState('');
+  const [DVPH, setDVPH] = useState('');
+  const [DVPHText, setDVPHText] = useState('');
+  const [NPH, setNPH] = useState('');
+  const [NPHText, setNPHText] = useState('');
+  const [NTD, setNTD] = useState('');
+  const [NTDText, setNTDText] = useState('');
+  const [HXL, setHXL] = useState('');
+  const [NDCV, setNDCV] = useState('');
+
+  const [image, setImage] = useState('');
+
+  const [files, setFiles] = useState([]);
 
   const [listBieuDo, setListBieuDo] = useState([]);
 
@@ -463,7 +493,8 @@ export const MapPage = () => {
   const cartRefClose = useRef(null);
 
   useEffect(() => {
-    var tokenApi = Cookies.get("token"); if (!tokenApi) { tokenApi = "Gaz9jR6ZMg+0qi+7XiRH6g=="; }
+    var tokenApi = Cookies.get("token"); if (!tokenApi) { tokenApi = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTk5MDI2NTYsImV4cCI6MTU5OTk4OTA1Niwic3ViIjoiZGVtbzEiLCJoYXNocHdkIjoiemZDVHlhK0FQYmhPYmwvcFBTNVVYUT09IiwiY29udGV4dCI6eyJ1c2VyIjp7InVzZXJOYW1lIjoiZGVtbzEiLCJkaXNwbGF5TmFtZSI6ImRlbW8xIn19fQ.I_fJ_GsX9xxTs2d-BxlPamNH9T4VmsCwVFbH91bBWbY"; }
+    setToken(tokenApi)
     const fetchData = async () => {
       var data1 = await requestGET(`https://dieuhanhubnd.hanhchinhcong.net/bcapi/areas/asidemenus?siteUrl=https%3A%2F%2Fdieuhanhubnd.hanhchinhcong.net%2Fsites%2Fbc_board`)
       var dataM = data1.result ? data1.result.items : []
@@ -476,7 +507,7 @@ export const MapPage = () => {
       });
       setDataMenuChildren(dataM[0].children)
       var code = dataM.length > 0 ? dataM[0].children[0].code : ''
-      var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}&country=LS`)
+      var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}&country=BG`)
       var data2 = data1.data ? data1.data : []
       setDataMap(data2)
     };
@@ -486,7 +517,7 @@ export const MapPage = () => {
         messaging.requestPermission()
           .then(async function () {
             var token = await messaging.getToken();
-            await requestPOSTFCM(`https://iid.googleapis.com/iid/v1/${token}/rel/topics/ND_TTDH`)
+            await requestPOSTFCM(`https://iid.googleapis.com/iid/v1/${token}/rel/topics/BG_TTDH`)
           })
           .catch(function (err) {
             console.log("Unable to get permission to notify.", err);
@@ -495,7 +526,8 @@ export const MapPage = () => {
       }
     }
     const fetchData2 = async () => {
-      var dataF = await requestGET2('https://namdinhapi.atoma.vn:786/home/getaccesstoken?username=tandan&password=tandan123')
+      var body = {"username": "ictadmin", "password": "MQ1234"}
+      var dataF = await requestPOST('https://crm.mqsolutions.vn/auth', body)
       var dataFC = dataF.access_token ? dataF.access_token : ''
       setTokenCamera(dataFC)
     }
@@ -512,13 +544,51 @@ export const MapPage = () => {
       setListQH(dataAll)
     }
 
+    const fetchData4 = async() => {
+      var maDonVi = sessionStorage.getItem('maDonVi');if(!maDonVi){maDonVi = "000-00-12-H40"}
+      var body = {"token": tokenApi}
+      var body1 = {"token": tokenApi, "donVi": maDonVi}
+
+      var data1 = await requestPOSTWSO2(`${config.wso2link}UBNDCDDH/LayDSNguonCongViec`, body)
+      var data = data1.data?data1.data:[]
+      setDataNDV(data)
+
+      var data2 = await requestPOSTWSO2(`${config.wso2link}UBNDCDDH/LayDsLinhVuc`, body)
+      var data3 = data2.data?data2.data:[]
+      setDataLV(data3)
+
+      var data4 = await requestPOSTWSO2(`${config.wso2link}UBNDCDDH/GetDataGroup`, body1)
+      var data5 = data4.data?data4.data:[]
+      setDataGroup(data5)
+
+      var data6 = await requestPOSTWSO2(`${config.wso2link}UBNDCDDH/GetDataUser`, body1)
+      var data7 = data6.data?data6.data:[]
+      setDataUser(data7)
+
+    }
+
     fetchData()
     fetchData2()
     fetchData3()
     FCM()
+    fetchData4()
     return () => {
     };
   }, []);
+
+  useEffect(() => {
+    setNDV('')
+    setLV('')
+    setDVXL('')
+    setNXL('')
+    setDVPH('')
+    setNPH('')
+    setNTD('')
+    setNDCV('')
+    setHXL('')
+    return () => {
+    };
+  }, [modalCDDH]);
 
   const getWarning = async (message) => {
     console.log(message)
@@ -545,7 +615,7 @@ export const MapPage = () => {
       const fetchData = async () => {
         var code = dataMenu.length > 0 ? dataMenu[activeMenu].children[0].code : ''
         var svg = dataMenu.length > 0 ? dataMenu[activeMenu].children[0]['icon-class'] : 'media/icons/UB.png'
-        var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}&country=LS`)
+        var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}&country=BG`)
         var data2 = data1.data ? data1.data : []
         setDataMap(data2)
         setSvg(svg)
@@ -562,7 +632,7 @@ export const MapPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       var code = dataMenu.length > 0 ? dataMenu[activeMenu].children[active].code : ''
-      var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}&country=LS`)
+      var data1 = await requestGET2(`https://bcdev.tandan.com.vn/_vti_bin/td.wcf/wcfservice.svc/getOfficeByCode?code=${code}&country=BG`)
       var data2 = data1.data ? data1.data : []
       setDataMap(data2)
     };
@@ -572,11 +642,10 @@ export const MapPage = () => {
   }, [active]);
 
   useEffect(() => {
-    var tokenApi = Cookies.get("token"); if (!tokenApi) { tokenApi = "Gaz9jR6ZMg+0qi+7XiRH6g=="; }
 
     const fetchData = async () => {
       if (modal) {
-        var body = { "token": tokenApi }
+        var body = { "token": token }
         APIGiamSat.map(async (l) => {
           var data1 = await requestPOSTWSO2(`${config.wso2link}${l.api}/LayDanhSachAPIGiamSat`, body)
           var data = data1.data ? data1.data : {}
@@ -591,7 +660,7 @@ export const MapPage = () => {
               }
               switch (i.type) {
                 case "tron":
-                  var body = { "token": tokenApi, "function": i.function, "fromDate": "2020-01-01T00:00:00", "toDate": "2020-12-31T00:00:00", "maDonVi": dataModal.MaDonVi }
+                  var body = { "token": token, "function": i.function, "fromDate": "2020-01-01T00:00:00", "toDate": "2020-12-31T00:00:00", "maDonVi": dataModal.MaDonVi }
                   var data1 = await requestPOSTWSO2(`${config.wso2link}${l.api}/LayDuLieuBieuDoTron`, body)
                   var data = data1.data ? data1.data : []
                   var serie = []
@@ -608,7 +677,7 @@ export const MapPage = () => {
                   break;
 
                 case "cot":
-                  var body = { "token": tokenApi, "function": i.function, "fromDate": "2020-01-01T00:00:00", "toDate": "2020-12-31T00:00:00", "maDonVi": dataModal.MaDonVi }
+                  var body = { "token": token, "function": i.function, "fromDate": "2020-01-01T00:00:00", "toDate": "2020-12-31T00:00:00", "maDonVi": dataModal.MaDonVi }
                   var data1 = await requestPOSTWSO2(`${config.wso2link}${l.api}/LayDuLieuBieuDoCot`, body)
                   var data = data1.data ? data1.data : []
                   var serie = []
@@ -653,6 +722,148 @@ export const MapPage = () => {
     }, 1000)
   }
 
+  const controlNDV = (e) => {
+    setNDV(e.value)
+    setNDVText(e[e.selectedIndex].text)
+  }
+
+  const controlLV = (e) => {
+    setLV(e.value)
+    setLVText(e[e.selectedIndex].text)
+  }
+  
+  const controlDVXL = (e) => {
+    setDVXL(e.value)
+    setDVXLText(e[e.selectedIndex].text)
+  }
+
+  const controlNXL = (e) => {
+    setNXL(e.value)
+    setNXLText(e[e.selectedIndex].text)
+  }
+
+  const controlDVPH = (e) => {
+    setDVPH(e.value)
+    setDVPHText(e[e.selectedIndex].text)
+  }
+
+  const controlNPH = (e) => {
+    setNPH(e.value)
+    setNPHText(e[e.selectedIndex].text)
+  }
+
+  const controlNTD = (e) => {
+    setNTD(e.value)
+    setNTDText(e[e.selectedIndex].text)
+  }
+
+  const creatCDDH = (func) => {
+    setModal(false)
+    setModalCDDH(true)
+    html2canvas(document.getElementById(`${func}-all`), {backgroundColor : "rgba(0,0,0,0.6",}).then(function (canvas) {
+      var base64image = canvas.toDataURL("image/png");
+      setImage(base64image)
+    });
+  }
+
+  const getBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsBinaryString(file);
+      reader.onload = () => resolve(btoa(reader.result));
+      reader.onerror = error => reject(error);
+    });
+  }
+
+  const sendCDDH = async() => {
+    var dinhKem = "";
+    let _count = 0;
+    if(files.length>0){
+      for(var i =0 ;i< files.length;i++){
+        var _name = files[i].name;
+        var _base64 = await getBase64(files[i])
+        var body = {"token": token, "FileName": _name, "FileBase64": _base64}
+        var data1 = await requestPOSTWSO2(`${config.wso2link}UBNDCDDH/UploadFileCongViec`, body)
+        if(data1.error.code == 200){
+          toast("Tải lên file thành công!", {type: 'dark'})
+          _count++
+          var data = data1.data?data1.data:''
+          dinhKem += data+"##";
+          if(_count==files.length){
+            if(image !== ''){
+              var __base64 = image.split(',')[1];
+              var __name = (new Date().getTime())+".png";
+
+              var body1 = {"token": token, "FileName": __name, "FileBase64": __base64}
+              var data2 = await requestPOSTWSO2(`${config.wso2link}UBNDCDDH/UploadFileCongViec`, body1)
+              if(data2.error.code == 200){
+                toast("Tải lên file thành công!", {type: 'dark'})
+                dinhKem += data2.data+"##";
+                finishCDDH(dinhKem)
+              }
+            }
+          }
+        }
+      }
+    }
+    else{
+      if(image !== ''){
+        var __base64 = image.split(',')[1];
+        var __name = (new Date().getTime())+".png";
+
+        var body1 = {"token": token, "FileName": __name, "FileBase64": __base64}
+        var data2 = await requestPOSTWSO2(`${config.wso2link}UBNDCDDH/UploadFileCongViec`, body1)
+        if(data2.error.code == 200){
+          toast("Tải lên file thành công!", {type: 'dark'})
+          dinhKem += data2.data+"##";
+          finishCDDH(dinhKem)
+        }
+      }
+    }
+  }
+
+  const finishCDDH = async(dinhKem) => {
+    var form_data = {
+      "token": token,
+      "DonVi": "",
+      "action": "ThemMoi",
+      "NoiDungCongViec": NDCV,
+      "ThoiGianBatDau": moment().format('YYYY-MM-DD'),
+      "ThoiGianKetThuc": moment().format('YYYY-MM-DD'),
+      "NguoiTheoDoi": NTD,
+      "TenNguoiTheoDoi": NTDText,
+      "NguonDauVao": NDV,
+      "NguonDauVaoText": NDVText,
+      "LinhVuc": LV,
+      "TaiLieuDinhKem": dinhKem.replace(/#$/,"").replace(/#$/,""),
+      "NguoiTao": "",
+      "TenNguoiTao": "",
+      "IDs": "",
+      "MaCongViec": "",
+      "IDLienKetNguon": "",
+      "TextLienKetNguon": "",
+      "DonViXuLy": DVXL,
+      "TenDonViXuLy": DVXLText,
+      "DonViPhoiHop": DVPH,
+      "TenDonViPhoiHop": DVPHText,
+      "NguoiXuLy": NXL,
+      "TenNguoiXuLy": NXLText,
+      "NguoiPhoiHop": NPH,
+      "TenNguoiPhoiHop": NPHText
+    }
+    var data1 = await requestPOSTWSO2(`${config.wso2link}UBNDCDDH/XuLyCongViec`, JSON.stringify(form_data))
+    console.log(data1)
+    if(data1.error.code==200){
+      toast("Tạo công việc thành công!", {type: 'dark'})
+      setModalCDDH(false)
+      setModal(true)
+    }
+    else{
+      toast("Tạo công việc thành công!", {type: 'warning'})
+    }
+    
+  }
+
   const AnyReactComponent = ({ item, svg, setModal, setDataModal, checkQH }) => (
     <OverlayTrigger
       placement="bottom"
@@ -665,7 +876,7 @@ export const MapPage = () => {
           blink: checkQH,
         })}
       >
-        {item.ID == 31 ? <img src='media/icons/TP.png' /> : <img src={svg} />}
+        {item.ID == 42 ? <img src='media/icons/TP.png' /> : <img src={svg} />}
       </span>
     </OverlayTrigger>
   );
@@ -707,6 +918,19 @@ export const MapPage = () => {
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        />
+        {/* Same as */}
+      <ToastContainer />
       <Toast show={warning} className='toast-warning' onClose={() => setWarning(false)} autohide>
         <Toast.Header>
           <strong className="mr-auto">{warningData.title}</strong>
@@ -718,10 +942,10 @@ export const MapPage = () => {
       <GoogleMapReact
         bootstrapURLKeys={{ key: 'AIzaSyCV_uNEj6aSqtnz_iPHElehAWRZNEdUPqM' }}
         defaultCenter={{
-          lat: 21.279642,
-          lng: 106.169441,
+          lat: 21.342851,
+          lng: 106.440850,
         }}
-        defaultZoom={10}
+        defaultZoom={11}
 
         options={mapOptions}
         onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
@@ -816,7 +1040,7 @@ export const MapPage = () => {
                 </div>
               </div>
             </div>
-            <Component iframe={`<iframe frameborder="0" scrolling="no" class="iframe-bc" height=100% src="https://baocao.namdinh.gov.vn/_vti_bin/TD.WCF/WCFService.svc/GetUrlPublic?Token=R2F6OWpSNlpNZyswcWkrN1hpUkg2Zz09&UrlRedirect=https://baocao.namdinh.gov.vn/sites/bc_board/SitePages/dashboard_dh.aspx#${BaoCaoID}"></iframe>`} />
+            <Component iframe={`<iframe frameborder="0" scrolling="no" class="iframe-bc" height=100% src="https://baocao.namdinh.gov.vn/_vti_bin/TD.WCF/WCFService.svc/GetUrlPublic?Token=${btoa(token)}&UrlRedirect=https://baocao.namdinh.gov.vn/sites/bc_board/SitePages/dashboard_dh.aspx#${BaoCaoID}"></iframe>`} />
           </div>
 
         </div>
@@ -878,11 +1102,11 @@ export const MapPage = () => {
             <Tab eventKey="baocaodh" title="Báo cáo điều hành">
               <Row>
                 {listBieuDo.map((i) => (
-                  <Col xs={9} md={6} >
+                  <Col xs={9} md={6} id={`${i.function}-all`}>
                     <div className="bieuDo-header">
                       <h3 style={{ cursor: 'pointer' }} className="bieuDo-tite" onClick={() => { window.open(`https://dieuhanhubnd.hanhchinhcong.net/sites/dashboard/SitePages/${i.site}/default.aspx`); }}>{i.title}</h3>
                       <div>
-                        <span onClick={() => { }} style={{ cursor: 'pointer' }} class="svg-icon svg-icon-danger svg-icon-3x">
+                        <span onClick={() => {creatCDDH(i.function)}} style={{ cursor: 'pointer' }} class="svg-icon svg-icon-danger svg-icon-3x">
                           <SVG
                             src={toAbsoluteUrl(
                               "/media/svg/icons/Files/Share.svg"
@@ -903,7 +1127,7 @@ export const MapPage = () => {
               </Row>
             </Tab>
             <Tab eventKey="baocaott" title="Báo cáo trực tuyến">
-              <Component iframe={`<iframe frameborder="0" scrolling="no" class="iframe-bc-modal" width=100% height=600px src="https://baocao.namdinh.gov.vn/_vti_bin/TD.WCF/WCFService.svc/GetUrlPublic?Token=R2F6OWpSNlpNZyswcWkrN1hpUkg2Zz09&UrlRedirect=https://baocao.namdinh.gov.vn/sites/bc_board/SitePages/dashboard_dh.aspx#${dataModal.BaoCaoID}"></iframe>`} />
+              <Component iframe={`<iframe frameborder="0" scrolling="no" class="iframe-bc-modal" width=100% height=600px src="https://baocao.namdinh.gov.vn/_vti_bin/TD.WCF/WCFService.svc/GetUrlPublic?Token=${btoa(token)}&UrlRedirect=https://baocao.namdinh.gov.vn/sites/bc_board/SitePages/dashboard_dh.aspx#${dataModal.BaoCaoID}"></iframe>`} />
             </Tab>
           </Tabs>
         </Modal.Body>
@@ -985,26 +1209,32 @@ export const MapPage = () => {
           <Form>
             <Form.Row>
               <Col>
-                <Form.Group as={Row} controlId="formPlaintextEmail">
+                <Form.Group as={Row}>
                   <Form.Label column sm="2">
                     Nguồn đầu vào
                   </Form.Label>
                   <Col sm="6">
-                    <Form.Control as="select">
-                      <option>Phiếu giao việc</option>
+                    <Form.Control as="select" value={NDV} onChange={(e) => controlNDV(e.target)} >
+                      <option>--Chọn nguồn--</option>
+                      {dataNDV.map((i) => (
+                        <option value={i.MaNguon}>{i.TenNguon}</option>
+                      ))}
                     </Form.Control>
                   </Col>
                 </Form.Group>
               </Col>
 
               <Col>
-                <Form.Group as={Row} controlId="formPlaintextPassword">
+                <Form.Group as={Row}>
                   <Form.Label column sm="2">
                     Lĩnh vực
                   </Form.Label>
                   <Col sm="6">
-                    <Form.Control as="select">
+                    <Form.Control as="select" value={LV} onChange={(e) => controlLV(e.target)}>
                       <option>--Chọn lĩnh vực--</option>
+                      {dataLV.map((i) => (
+                        <option value={i.TenLinhVuc}>{i.TenLinhVuc}</option>
+                      ))}
                     </Form.Control>
                   </Col>
                 </Form.Group>
@@ -1012,12 +1242,12 @@ export const MapPage = () => {
             </Form.Row>
             <Form.Row>
               <Col>
-                <Form.Group as={Row} controlId="formPlaintextEmail">
+                <Form.Group as={Row}>
                   <Form.Label column sm="2">
                     Nội dung công việc
                   </Form.Label>
                   <Col sm="6">
-                    <Form.Control as="textarea">
+                    <Form.Control as="textarea" value={NDCV} onChange={(e) => setNDCV(e.target.value)}>
 
                     </Form.Control>
                   </Col>
@@ -1025,39 +1255,35 @@ export const MapPage = () => {
               </Col>
 
               <Col>
-                <Form.Group as={Row} controlId="formPlaintextPassword">
+                <Form.Group as={Row}>
                   <Form.Label column sm="2">
                     Hạn xử lý
                   </Form.Label>
                   <Col sm="6">
-                    <DatePicker st locale="vi" dateFormat="DD/MM/YYYY" />
+                    <DatePicker st locale="vi" dateFormat="dd/MM/yyyy" selected={HXL} onChange={date => setHXL(date)} />
                   </Col>
                 </Form.Group>
               </Col>
             </Form.Row>
             <Form.Row>
               <Col>
-                <Form.Group as={Row} controlId="formPlaintextEmail">
+                <Form.Group as={Row}>
                   <Form.Label column sm="2">
-                    Nguồn đầu vào
+                    Đính kèm
                   </Form.Label>
                   <Col sm="6">
-                    <Form.Control as="select">
-                      <option>Phiếu giao việc</option>
-                    </Form.Control>
+                    <Form.File id="DinhKem" label="Chọn file" onChange={(e) => setFiles(e.target.files)} />
                   </Col>
                 </Form.Group>
               </Col>
 
               <Col>
-                <Form.Group as={Row} controlId="formPlaintextPassword">
+                <Form.Group as={Row}>
                   <Form.Label column sm="2">
-                    Lĩnh vực
+                    Hình ảnh
                   </Form.Label>
                   <Col sm="6">
-                    <Form.Control as="select">
-                      <option>--Chọn lĩnh vực--</option>
-                    </Form.Control>
+                     <img src={image} height={150} id="image-cddh" width="100%" />
                   </Col>
                 </Form.Group>
               </Col>
@@ -1067,33 +1293,95 @@ export const MapPage = () => {
           <Form>
             <Form.Row>
               <Col>
-                <Form.Group as={Row} controlId="formPlaintextEmail">
+                <Form.Group as={Row}>
                   <Form.Label column sm="2">
                     Đơn vị xử lý
                   </Form.Label>
                   <Col sm="6">
-                    <Form.Control as="select">
+                    <Form.Control as="select" value={DVXL} onChange={(e) => controlDVXL(e.target)}>
                       <option>--Chọn đơn vị--</option>
+                      {dataGroup.map((i) => (
+                        <option value={i.groupCode}>{i.groupName}</option>
+                      ))}
                     </Form.Control>
                   </Col>
                 </Form.Group>
               </Col>
 
               <Col>
-                <Form.Group as={Row} controlId="formPlaintextPassword">
+                <Form.Group as={Row}>
                   <Form.Label column sm="2">
                     Người xử lý
                   </Form.Label>
                   <Col sm="6">
-                    <Form.Control as="select">
+                    <Form.Control as="select" value={NXL} onChange={(e) => controlNXL(e.target)}>
                       <option>--Chọn người--</option>
+                      {dataUser.map((i) => (
+                        <option value={i.account}>{i.userName}</option>
+                      ))}
                     </Form.Control>
                   </Col>
                 </Form.Group>
               </Col>
             </Form.Row>
+            <Form.Row>
+              <Col>
+                <Form.Group as={Row}>
+                  <Form.Label column sm="2">
+                    Đơn vị phối hợp
+                  </Form.Label>
+                  <Col sm="6">
+                    <Form.Control as="select" value={DVPH} onChange={(e) => controlDVPH(e.target)}>
+                      <option>--Chọn đơn vị--</option>
+                      {dataGroup.map((i) => (
+                        <option value={i.groupCode}>{i.groupName}</option>
+                      ))}
+                    </Form.Control>
+                  </Col>
+                </Form.Group>
+              </Col>
+
+              <Col>
+                <Form.Group as={Row}>
+                  <Form.Label column sm="2">
+                    Người phối hợp
+                  </Form.Label>
+                  <Col sm="6">
+                    <Form.Control as="select" value={NPH} onChange={(e) => controlNPH(e.target)}>
+                      <option>--Chọn người--</option>
+                      {dataUser.map((i) => (
+                        <option value={i.account}>{i.userName}</option>
+                      ))}
+                    </Form.Control>
+                  </Col>
+                </Form.Group>
+              </Col>
+            </Form.Row>
+            <Form.Row>
+
+              <Col>
+                <Form.Group as={Row}>
+                  <Form.Label column sm="2">
+                    Người theo dõi
+                  </Form.Label>
+                  <Col sm="6">
+                    <Form.Control as="select" value={NTD} onChange={(e) => controlNTD(e.target)}>
+                      <option>--Chọn người--</option>
+                      {dataUser.map((i) => (
+                        <option value={i.account}>{i.userName}</option>
+                      ))}
+                    </Form.Control>
+                  </Col>
+                </Form.Group>
+              </Col>
+              <Col></Col>
+            </Form.Row>
           </Form>
         </Modal.Body>
+        <Modal.Footer> 
+          <Button variant="danger" onClick={() => setModalCDDH(false) + setModal(true)}>Đóng</Button>
+          <Button variant="primary" onClick={() => sendCDDH()}>Lưu lại</Button>
+        </Modal.Footer>
       </Modal>
 
     </div>

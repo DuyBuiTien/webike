@@ -3,23 +3,28 @@ import SVG from "react-inlinesvg";
 import {toAbsoluteUrl} from "../../_metronic/_helpers";
 import "./MapPage.scss";
 import { Carousel, ListGroup } from 'react-bootstrap';
-import {requestPOST, requestGET2} from './api/basic'
+import {requestPOST, requestGET2, requestGETMQ} from './api/basic'
 import { CheckConnectionData } from './data/CheckConnectionData'
 
 export const DashboardLeftCard4 = (props) => {
 	const [data, setData] = useState([]);
 
     useEffect(() => {
-		const fetchData = async () => {
-			var data1 = await requestGET2(`https://namdinhapi.atoma.vn:786/behavior/violatecount?access_token=${props.tokenCamera}`)
-			var dataVPTT = data1.count?data1.count:'0'
-			var data2 = await requestGET2(`https://namdinhapi.atoma.vn:786/face/historiescount?access_token=${props.tokenCamera}`)
-			var dataNDKM = data2.count?data2.count:'0'
-			var data3 = [{id: 1, name:'Số lượng vi phạm trật tự', count: dataVPTT},{id: 2, name:'Số lượng nhận diện khuôn mặt', count: dataNDKM}]
+		const fetchData = async (tokenCamera) => {
+			var data1 = await requestGETMQ(`https://crm.mqsolutions.vn/api/v1/info_event`, tokenCamera)
+			var dataC = data1?data1:{}
+			
+			var data3 = [
+				{id: 1, name:'Số lượng camera cho quản lý sự kiện', count: dataC.num_cameras_for_event},
+				{id: 2, name:'Số lượng camera cho quản lý chính công', count: dataC.num_cameras_for_office},
+				{id: 3, name:'Số lượng camera cho quản lý giao thông', count: dataC.num_cameras_for_traffic},
+				{id: 4, name:'Số lượng sự kiện', count: dataC.num_events},
+				{id: 5, name:'Số lượng camera không hoạt động', count: dataC.num_inactive_cameras},
+				{id: 6, name:'Tổng số lượng tất cả camera', count: dataC.total_cameras}]
 			setData(data3);
 		};
 		if(props.tokenCamera){
-			fetchData()
+			fetchData(props.tokenCamera)
 		}
     }, [props.tokenCamera]);
 
@@ -44,7 +49,7 @@ export const DashboardLeftCard4 = (props) => {
 							<ul class="list-inline">
 								{data.map((i) => (
 									<li key={i.id} className="list-inline-item">
-									<b className="list-inline-item-left">{i.name}</b>
+									<b className="list-inline-item-left">{i.name}    </b>
 									<div className="list-inline-item-right">
 									<p>{i.count}</p>
 									<span class="svg-icon svg-icon-success svg-icon-1x">
