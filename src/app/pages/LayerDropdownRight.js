@@ -80,7 +80,6 @@ export const LayerDropdownRight = (props) => {
       dataAll_1 = dataAll_1.filter(i => i.dataList.length != 0)
       console.log(dataAll_1)
       setDataAll(dataAll_1)
-      props.setListCamera(dataAll_1)
       props.setDataAll(dataAll_1)
     } else {
       var data = await requestGETMQ(
@@ -110,7 +109,7 @@ export const LayerDropdownRight = (props) => {
           var temp = []
           var dataItem = []
           temp = dataCam.filter(
-            e => e.address.latitude == item.lat && e.address.longitude == item.lon
+            e => e.address.latitude === item.lat && e.address.longitude === item.lon
            )
           dataItem.push({ type: 1, listItem: temp })
           var obj = {
@@ -124,7 +123,7 @@ export const LayerDropdownRight = (props) => {
         dataLonlat.map(item => {
           var temp = []
           temp = dataCam.filter(
-            e => e.address.latitude == item.lat && e.address.longitude == item.lon
+            e => e.address.latitude === item.lat && e.address.longitude === item.lon
           )
           var ind = -1
           dataAll_1.map(i => {
@@ -150,7 +149,6 @@ export const LayerDropdownRight = (props) => {
       }
       console.log(dataAll_1)
       setDataAll(dataAll_1)
-      props.setListCamera(dataAll_1)
       props.setDataAll(dataAll_1)
     }
   }
@@ -166,25 +164,28 @@ export const LayerDropdownRight = (props) => {
       dataAll_1 = dataAll_1.filter(i => i.dataList.length != 0)
       console.log(dataAll_1)
       setDataAll(dataAll_1)
-      props.setWarningDataMap(dataAll_1)
       props.setDataAll(dataAll_1)
     } else {
       var data = await requestGETMQ(
-        `https://crm.mqsolutions.vn/api/v1/events`,props.tokenCamera
+        `https://crm.mqsolutions.vn/api/v1/events?offset=0&limit=20&cam_id=26&event_id=1`,props.tokenCamera
       )
-      var dataViolate = data.violates ? data.violates : []
+      var dataViolate = data.events ? data.events : []
       var dataAll_1 = [...dataAll]
       var dataLonlat = []
       dataViolate.map(item => {
         var ind = -1
+        var ob = {
+          lon:item.longitude,
+          lat:item.latitude,
+        }
         dataLonlat.forEach(e => {
-          if (JSON.stringify(item.camera.lonlat) === JSON.stringify(e)) {
+          if (JSON.stringify(ob) === JSON.stringify(e)) {
             ind = 0
             return
           }
         })
         if (ind == -1) {
-          dataLonlat.push(item.camera.lonlat)
+          dataLonlat.push(ob)
         }
       })
       if (dataAll_1.length == 0) {
@@ -192,13 +193,13 @@ export const LayerDropdownRight = (props) => {
           var temp = []
           var dataItem = []
           temp = dataViolate.filter(
-            e => JSON.stringify(e.camera.lonlat) === JSON.stringify(item)
+            e => e.latitude === item.lat && e.longitude === item.lon
           )
           dataItem.push({ type: 2, listItem: temp })
 
           var obj = {
-            lat: item.latitude,
-            lng: item.longitude,
+            lat: item.lat,
+            lng: item.lon,
             dataList: dataItem
           }
           dataAll_1.push(obj)
@@ -207,13 +208,13 @@ export const LayerDropdownRight = (props) => {
         dataLonlat.map(item => {
           var temp = []
           temp = dataViolate.filter(
-            e => JSON.stringify(e.camera.lonlat) === JSON.stringify(item)
+            e => e.latitude === item.lat && e.longitude === item.lon
           )
           var ind = -1
           dataAll_1.map(i => {
             var ob = {
-              longitude: i.lng,
-              latitude: i.lat
+              lon: i.lng,
+              lat: i.lat
             }
             if (JSON.stringify(ob) === JSON.stringify(item)) {
               i.dataList.push({ type: 2, listItem: temp })
@@ -233,7 +234,6 @@ export const LayerDropdownRight = (props) => {
       }
       console.log(dataAll_1)
       setDataAll(dataAll_1)
-      props.setWarningDataMap(dataAll_1)
       props.setDataAll(dataAll_1)
     }
   }
