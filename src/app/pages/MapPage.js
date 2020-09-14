@@ -464,8 +464,7 @@ export const MapPage = () => {
   const [dataModalCam, setDataModalCam] = useState({})
   const [dataMenu, setDataMenu] = useState([])
   const [dataMenuChildren, setDataMenuChildren] = useState([])
-  const [listCamera, setListCamera] = useState([])
-  const [tokenCamera, setTokenCamera] = useState([])
+  const [tokenCamera, setTokenCamera] = useState(null)
   const [token, setToken] = useState('')
   
   const [dataNDV, setDataNDV] = useState([])
@@ -499,7 +498,6 @@ export const MapPage = () => {
 
   const [warning, setWarning] = useState(false)
   const [warningData, setWarningData] = useState({})
-  const [warningDataMap, setWarningDataMap] = useState([])
   const [modalWarning, setModalWarning] = useState(false)
   const [modalWarningData, setModalWarningData] = useState({})
   const [modalWarningList, setModalWarningList] = useState(false)
@@ -653,7 +651,7 @@ export const MapPage = () => {
     warning.lat = camera.lonlat.latitude
     warning.lng = camera.lonlat.longitude
     warning.title = message.data.notification.title
-    setWarningDataMap(oldArray => [...oldArray, warning])
+    //setWarningDataMap(oldArray => [...oldArray, warning])
   }
 
   useEffect(() => {
@@ -791,7 +789,8 @@ export const MapPage = () => {
 
   useEffect(() => {
     const fetchData = async(token)=>{
-      var data = requestGETMQ(`https://crm.mqsolutions.vn/api/v1/eventtypes`,token)
+      var data = await requestGETMQ(`https://crm.mqsolutions.vn/api/v1/eventtypes`,token)
+      console.log(data)
       setEventType(data.events)
     }
     if(tokenCamera){
@@ -999,17 +998,8 @@ export const MapPage = () => {
 
   const checkModalWarningData = async item => {
     var images = []
-    if (item.image_path) {
-      if (item.image_path.includes('.png')) {
-        images.push(item.image_path)
-      } else {
-        var data1 = await requestGET2(
-          `https://namdinhapi.atoma.vn:786/files/getfilesinfolder?path=${item.image_path}`
-        )
-        var data = data1.Results ? data1.Results : []
-        data.map(i => (i.fullpath = encodeURIComponent(i.fullpath)))
-        data.map(j => images.push(j.fullpath.replace('%5C%5C', '%5C')))
-      }
+    if (item.image) {
+      images.push(`https://crm.mqsolutions.vn/${item.image}`)
     }
     item.images = images
     setModalWarningData(item)
@@ -1048,6 +1038,8 @@ export const MapPage = () => {
   const AnyReactComponent12 = ({ item1, item2 }) => (
     <span
       onClick={() => {
+        console.log(item1)
+        console.log(item2)
         setModalMixData1(item1)
         setModalMixData2(item2)
         setModalMix(true)
@@ -1071,12 +1063,12 @@ export const MapPage = () => {
       style={{ borderWidth: 1, borderColor: '#ffff', margin: 5, padding: 10 }}
     >
       <span style={{ fontSize: 22, color: '#FFEB3B' }}>
-        {item.item.camera.name}
+        {item.item.event_name}
       </span>
       <div>
-        <span style={{ fontSize: 16, color: '#ffff' }}>Địa điểm:</span>
+        <span style={{ fontSize: 16, color: '#ffff' }}>Loại sự kiện: </span>
         <span style={{ marginLeft: 15, fontSize: 16, color: '#ffff' }}>
-          {item.item.ward}
+          {eventType[item.item.event_id-1].name}
         </span>
       </div>
       <div>
@@ -1105,10 +1097,16 @@ export const MapPage = () => {
       style={{ borderWidth: 1, borderColor: '#ffff', margin: 5, padding: 10 }}
     >
       <span style={{ fontSize: 22, color: '#FFEB3B' }}>{item.item.name}</span>
-      <div>
+      {/* <div>
         <span style={{ fontSize: 16, color: '#ffff' }}>Địa điểm:</span>
         <span style={{ marginLeft: 15, fontSize: 16, color: '#ffff' }}>
           {item.item.address.address}
+        </span>
+      </div> */}
+      <div>
+        <span style={{ fontSize: 16, color: '#ffff' }}>Thời gian:</span>
+        <span style={{ marginLeft: 15, fontSize: 16, color: '#ffff' }}>
+          {new Date(item.item.time + 'Z').toLocaleString()}
         </span>
       </div>
       <Button
@@ -1277,8 +1275,6 @@ export const MapPage = () => {
 
       <LayerDropdownRight
         tokenCamera={tokenCamera}
-        setListCamera={setListCamera}
-        setWarningDataMap={setWarningDataMap}
         setDataAll={setDataAll}
       />
 
@@ -1490,7 +1486,7 @@ export const MapPage = () => {
                 <img
                   width='30%'
                   height={200}
-                  src={`https://namdinhapi.atoma.vn:786/files/download?path=${i}`}
+                  src={i}
                 />
               ))}
             </div>
@@ -1828,7 +1824,7 @@ export const MapPage = () => {
             Danh sách sự kiện
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body style={{height: '40%'}}>
           {modalMixData2.map(item => (
             <RenderWarningItem item={item} />
           ))}
@@ -1838,7 +1834,7 @@ export const MapPage = () => {
             Camera
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body style={{height: '40%'}}>
           {modalMixData1.map(item => (
             <RenderCameraItem item={item} />
           ))}
