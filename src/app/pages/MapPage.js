@@ -521,7 +521,7 @@ export const MapPage = () => {
     var tokenApi = Cookies.get('token')
     if (!tokenApi) {
       tokenApi =
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTk5MDI2NTYsImV4cCI6MTU5OTk4OTA1Niwic3ViIjoiZGVtbzEiLCJoYXNocHdkIjoiemZDVHlhK0FQYmhPYmwvcFBTNVVYUT09IiwiY29udGV4dCI6eyJ1c2VyIjp7InVzZXJOYW1lIjoiZGVtbzEiLCJkaXNwbGF5TmFtZSI6ImRlbW8xIn19fQ.I_fJ_GsX9xxTs2d-BxlPamNH9T4VmsCwVFbH91bBWbY'
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MDAwNTUzMTYsImV4cCI6MTYwMDE0MTcxNiwic3ViIjoiZGVtbzEiLCJoYXNocHdkIjoiemZDVHlhK0FQYmhPYmwvcFBTNVVYUT09IiwiY29udGV4dCI6eyJ1c2VyIjp7InVzZXJOYW1lIjoiZGVtbzEiLCJkaXNwbGF5TmFtZSI6ImRlbW8xIn19fQ.rfaWWEeXPn7aj1A4SqSVhcyB1mbbB1HsMdLAWzdWdSs'
     }
     setToken(tokenApi)
     const fetchData = async () => {
@@ -1462,7 +1462,7 @@ export const MapPage = () => {
         </Modal.Header>
         <Modal.Body>
           <Component
-            iframe={`<iframe frameborder="0" class="iframe-bc" width=100% height=600px src="https://namndinh.netview.vn/redirect/eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1NiIsImlhdCI6MTU5ODU4NDkwOX0.0uWiiu_xxtfgI4s_rU5ZW6s1Ey4di0nQiNAJ5SnjcsOmFy_MTA231c3RhssUJ8Cd-GIlho6rkMn5SFyvBRYNUw?navigate=common-report"></iframe>`}
+            iframe={`<iframe frameborder="0" class="iframe-bc" width=100% height=600px src="https://bacgiang.netview.vn/redirect/eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNzMzNiIsImlhdCI6MTU5NzczNzMyN30.KLUj2dY2EDpaBqWb0N-kDuAJWERCfxbu5-Mqf1pHswwAy4oUEh1D23fdCDDTSlf68NO0khFncsdE-M-hQtTQvA?navigate=common-report"></iframe>`}
           />
         </Modal.Body>
       </Modal>
