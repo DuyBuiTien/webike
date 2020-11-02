@@ -11,6 +11,12 @@
 @import "./_metronic/_assets/sass/themes/layout/brand/dark.scss";
 @import "./_metronic/_assets/sass/themes/layout/aside/dark.scss";
 
+$color_primary: #44546a;
+$blue : #2196f3;
+$blue2: #3f68a5;
+$green: #8dc63f;
+$orange: #ef6411;
+
 // Header themes
 // Light
 //@import "./_metronic/_assets/sass/themes/layout/header/base/light.scss";
@@ -104,3 +110,185 @@
 .cursor-default {
   cursor: default !important;
 }
+header {
+  padding-bottom: 50px;
+  background: linear-gradient(rgba($color_primary, 0.6), rgba($color_primary, 0.5), rgba($color_primary, 0));
+  @include transition();
+  animation-delay: 1s;
+
+  .navbar-light {
+    padding: 0;
+
+    .navbar-brand {
+      @include transition(0.8s);
+      padding: 10px 20px 0px 0;	
+    }
+  }
+
+  &.fixed {
+    padding-bottom: 0px;
+    background: rgba($color_primary, 0.9);
+    
+    .navbar-nav {
+    &>li {
+      &>a {
+        color: #fff;
+      }
+    }
+  }
+  .head-logo {
+    max-width: 60px
+  }
+  .navbar-light {
+    .navbar-brand {
+        color: rgba(0,0,0,.9);
+        padding: 6px 20px;
+    }
+  }
+  }
+}
+.navbar-nav {
+&>li {
+  &>a {
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 20px;
+    padding: 20px;
+    display: inline-block;
+
+    &>span {
+        color: #e5dabe;
+        font-weight: 300;
+        padding-right: 5px;
+        font-size: 1rem;
+    }
+  }
+}
+
+}
+.navbar-search {
+.form-control {
+  background: transparent;
+  border-radius: 0;
+  max-width: 150px;
+  width: 150px;
+  @include transition();
+
+  &::placeholder {
+    color: rgba(#fff, 0.7);
+  }
+  &::-webkit-placeholder {
+    color: rgba(#fff, 0.7);
+  }
+  &:focus {
+    max-width: 250px;
+    width: 250px
+  }
+}
+.btn {
+  color: #fff;
+  border-color: #fff;
+  border-radius: 0;
+
+  &:hover{
+    border-color: $color_primary;
+    background: $color_primary
+  }
+}
+}
+/* ---Slider */
+
+.carousel-indicators li {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 0px 3px #fff;
+  background: transparent;
+  cursor: pointer;
+  margin-left: 10px;
+  margin-right: 10px;
+  @include transition();
+
+  &.active, &:hover {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background: #fff
+  }
+}
+.slider-social {
+  position: absolute;
+  bottom: 5%;
+  left: 10%;
+  z-index: 1;
+  li {
+    a {
+      color: #fff;
+      font-size: 2.5rem;
+      @include transition();
+
+      &:hover {
+        color: $orange;
+      }
+    }
+  }
+}
+
+.carousel-indicators li {
+  border: 0px;
+}
+
+.carousel-fade {
+	width: 100%;
+
+	.carousel-item {
+		opacity: 0;
+		transition-duration: .6s;
+		transition-property: opacity;
+
+		.active.carousel-item-left, &.active.carousel-item-right {
+			opacity: 0;
+		}
+		&.active, &-next.carousel-item-left, &-prev.carousel-item-right {
+			opacity: 1;
+		}
+		.carousel-thumb {
+			max-height: 90vh;
+			overflow: hidden;
+
+			img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				object-position: center;
+			}
+		}
+		.carousel-caption {
+			bottom: 20%
+		}
+	}
+	.carousel-item-next,
+	.carousel-item-prev,
+	.carousel-item.active,
+	.active.carousel-item-left,
+	.active.carousel-item-prev {
+		 transform: translateX(0);
+		 transform: translate3d(0, 0, 0);
+	}
+
+	&.carousel-category {
+		.carousel-item {
+			.carousel-thumb {
+				max-height: 70vh;
+			}
+			.carousel-caption {
+				h5 {
+					font-size: 5rem;
+					font-family: Duepun, Avo, Roboto, sans-serif;
+					font-weight: 600;
+				}
+			}
+		}
+	}
+}
+/* ---End: Slider */
