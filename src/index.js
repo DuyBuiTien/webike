@@ -26,8 +26,6 @@ import {
 } from "./_metronic/layout";
 import {MetronicI18nProvider} from "./_metronic/i18n";
 
-import { messaging } from "./app/pages/init-fcm";
-
 /**
  * Base URL of the website.
  *
@@ -55,7 +53,7 @@ if ("serviceWorker" in navigator) {
     .register("./firebase-messaging-sw.js")
     .then(function(registration) {
       console.log("Registration successful, scope is:", registration.scope);
-      messaging.useServiceWorker(registration)
+      // messaging.useServiceWorker(registration)
     })
     .catch(function(err) {
       console.log("Service worker registration failed, error:", err);
