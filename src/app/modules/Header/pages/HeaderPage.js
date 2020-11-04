@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Carousel, Button, Accordion, Card } from 'react-bootstrap';
 import { AutoComplete, Input } from 'antd';
 import { ShoppingCartOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import {useHistory} from 'react-router-dom';
 
 const { Option } = AutoComplete;
 const { Search } = Input;
 
 export function HeaderPage() {
+  const history = useHistory();
   const [isSticky, setSticky] = useState(false);
   const handleScroll = () => {
     const offset = window.scrollY;
@@ -59,7 +61,9 @@ export function HeaderPage() {
                 <Accordion.Toggle as={Button} variant="link" color="#fff">Đăng nhập</Accordion.Toggle>
               </div>
               <div className="d-flex flex-row">
-                <a style={{height: '38px', width: '100px', background: '#fff', borderRadius: '3px', fontWeight: '600', display :'flex', padding: '0 6px', alignItems: 'center', marginLeft: '1rem'}}>
+                <a
+                  onClick={() => history.push('/detail')}
+                 style={{height: '38px', width: '100px', background: '#fff', borderRadius: '3px', fontWeight: '600', display :'flex', padding: '0 6px', alignItems: 'center', marginLeft: '1rem'}}>
                   <ShoppingCartOutlined style={{fontSize: '22px', marginRight: '4px'}}/>
                   Giỏ hàng
                 </a>

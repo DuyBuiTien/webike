@@ -283,7 +283,26 @@ header {
 color: #fff;
 }
 
-.nav .show > .nav-link, .nav .nav-link:hover:not(.disabled), .nav .nav-link.active {
-  background-color: #3699FF !important;
-  color: #fff;
+.react-multiple-carousel__arrow--left {
+  width: 23px;
+  height: 64px;
+  border-radius: 5px;
+  left: 0px;
+}
+
+.react-multiple-carousel__arrow--right {
+  width: 23px;
+  height: 64px;
+  border-radius: 5px;
+  right: 0px;
+}
+
+
+.div-item-para:hover{
+  border: 0.5px solid #E0E0E0;
+  box-shadow: 5px 5px 10px #e5dabe;
+  .item-para{
+    background-color: red;
+    color: #fff;
+  }
 }

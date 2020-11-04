@@ -3,13 +3,11 @@ import { Card, Image, Button } from 'react-bootstrap';
 
 export const ItemType = (props) => {
   return (
-    <>
-      <Card style={{ margin: '5px' }}>
-        <Card.Img variant="top" src="images/honda.jpg" />
-        <Card.Body style={{ padding: '0px' }}>
-         <Button>Honda</Button>
-        </Card.Body>
-      </Card>
-    </>
+    <a style={{ padding: '4px 8px 8px', display: 'block', borderRadius: '12px', textAlign: 'center', height: '130px' }} className="div-item-para">
+      <figure style={{ width: '90px', height: '90px', margin: '0px auto' }}>
+        <img src="/images/honda.jpg" style={{ width: '100%', height: '100%', objectFit: 'scale-down' }}></img>
+        <p style={{ borderRadius: '25px', border: '1px solid #d6d6d6', fontSize: '0.75rem', lineHeight: '23px' }} className="item-para">HONDA</p>
+      </figure>
+    </a>
   )
 }

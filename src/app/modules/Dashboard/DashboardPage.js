@@ -7,7 +7,6 @@ import { ItemType } from './component/ItemType';
 import { Footer } from '../Footer/Footer'
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import { ShoppingCartOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 
 export const DashboardPage = () => {
 
@@ -28,6 +27,42 @@ export const DashboardPage = () => {
       slidesToSlide: 1 // optional, default to 1.
     }
   };
+
+  const responsiveItem = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 8,
+      slidesToSlide: 1 // optional, default to 1.
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 5,
+      slidesToSlide: 2 // optional, default to 1.
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 5,
+      slidesToSlide: 1 // optional, default to 1.
+    }
+  };
+
+  const responsiveNews = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 1,
+      slidesToSlide: 1 // optional, default to 1.
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 1,
+      slidesToSlide: 2 // optional, default to 1.
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+      slidesToSlide: 1 // optional, default to 1.
+    }
+  }
   return (
     <>
       <HeaderPage />
@@ -63,26 +98,26 @@ export const DashboardPage = () => {
             <Card.Header style={{ fontWeight: '600', margin: '1rem', display: 'flex', justifyContent: 'center', fontSize: '25px', padding: '10px 5px' }}>Chợ xe máy</Card.Header>
 
             <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <p style={{ margin: '3px', fontWeight: '300', fontSize: '20px'}}>Xe mới đăng</p>
+              <p style={{ margin: '3px', fontWeight: '300', fontSize: '20px' }}>Xe mới đăng</p>
               <Nav
                 activeKey="all"
               >
-                <Nav.Item className="d-flex justify-content-center" style={{ borderWidth: '3px', borderColor: 'black', borderRadius: '5px'}}>
+                <Nav.Item className="d-flex justify-content-center">
                   <Nav.Link eventKey="all" style={{ background: '#fff', borderRadius: '3px', display: 'flex', padding: '0 6px', alignItems: 'center' }}>
                     Xem tất cả xe
                   </Nav.Link>
                 </Nav.Item>
-                <Nav.Item  className="d-flex justify-content-center">
+                <Nav.Item className="d-flex justify-content-center">
                   <Nav.Link eventKey="link-1" style={{ background: '#fff', borderRadius: '3px', display: 'flex', padding: '0 6px', alignItems: 'center' }}>
                     Xe ga
                   </Nav.Link>
                 </Nav.Item>
-                <Nav.Item  className="d-flex justify-content-center">
+                <Nav.Item className="d-flex justify-content-center">
                   <Nav.Link eventKey="link-2" style={{ background: '#fff', borderRadius: '3px', display: 'flex', padding: '0 6px', alignItems: 'center' }}>
                     Xe số
                   </Nav.Link>
                 </Nav.Item>
-                <Nav.Item  className="d-flex justify-content-center">
+                <Nav.Item className="d-flex justify-content-center">
                   <Nav.Link eventKey="link-3" style={{ background: '#fff', borderRadius: '3px', display: 'flex', padding: '0 6px', alignItems: 'center' }}>
                     Phân khối lớn
                   </Nav.Link>
@@ -113,7 +148,7 @@ export const DashboardPage = () => {
 
 
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: '2rem' }}>
-              <p>Dòng xe được xem nhiều</p>
+              <p style={{ margin: '3px', fontWeight: '300', fontSize: '20px' }}>Dòng xe được xem nhiều</p>
               <Nav
                 activeKey="all"
               >
@@ -156,30 +191,14 @@ export const DashboardPage = () => {
             </Carousel>
 
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: '2rem' }}>
-              <p>Dòng xe được xem nhiều</p>
-              <Nav
-                activeKey="all"
-              >
-                <Nav.Item>
-                  <Nav.Link href="all">~50cc</Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link eventKey="link-1">~175cc</Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link eventKey="link-2">~400cc</Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link eventKey="link-2">~750cc</Nav.Link>
-                </Nav.Item>
-              </Nav>
+              <p style={{ margin: '3px', fontWeight: '300', fontSize: '20px' }}>Tìm theo hãng xe</p>
             </div>
 
             <Carousel
               swipeable={false}
               draggable={false}
               showDots={true}
-              responsive={responsive}
+              responsive={responsiveItem}
               ssr={true} // means to render carousel on server-side.
               infinite={true}
               autoPlaySpeed={1000}
@@ -187,8 +206,14 @@ export const DashboardPage = () => {
               customTransition="all .5"
               transitionDuration={500}
               containerClass="carousel-container"
-              itemClass="carousel-item-padding-50-px"
+            // itemClass="carousel-item-padding-50-px"
             >
+              <ItemType></ItemType>
+              <ItemType></ItemType>
+              <ItemType></ItemType>
+              <ItemType></ItemType>
+              <ItemType></ItemType>
+              <ItemType></ItemType>
               <ItemType></ItemType>
               <ItemType></ItemType>
               <ItemType></ItemType>
@@ -205,23 +230,54 @@ export const DashboardPage = () => {
 
             <Card.Body>
               <Row >
-                <Col lg={6} md={6} sm={6} xl={6} xs={6} style={{ height: '439px', padding: '0px' }}>
-                  <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel" data-interval="3000">
+                <Col lg={6} md={6} sm={6} xl={6} xs={6} style={{ height: '472px', padding: '0px' }}>
+                  {/* <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel" data-interval="3000">
                     <div class="carousel-inner">
                       <div class="carousel-item active">
-                        <img class="d-block" style={{ height: '439px', width: '616px' }} src="images/bo-chuyen-so-nhanh-quick-shifter-600x400.jpg" alt="First slide" />
+                        <img class="d-block" style={{ height: '472px', width: '616px' }} src="images/bo-chuyen-so-nhanh-quick-shifter-600x400.jpg" alt="First slide" />
                       </div>
                       <div class="carousel-item">
-                        <img class="d-block w-100" src="images/1595575287756L-768x576-1-600x400.jpg" alt="Second slide" />
+                        <img class="d-block w-100" style={{ height: '472px', width: '616px' }}  src="images/1595575287756L-768x576-1-600x400.jpg" alt="Second slide" />
                       </div>
                       <div class="carousel-item">
-                        <img class="d-block w-100" src="images/ban-do-vario-bumblebee-125cc-dep-hang-dau-indonesia-nhin-ra-sao-1-600x400.jpeg" alt="Third slide" />
+                        <img class="d-block w-100" style={{ height: '472px', width: '616px' }}  src="images/ban-do-vario-bumblebee-125cc-dep-hang-dau-indonesia-nhin-ra-sao-1-600x400.jpeg" alt="Third slide" />
                       </div>
                       <div class="carousel-item">
-                        <img class="d-block w-100" src="images/yamaha-nvx-2021-co-gia-de-xuat-53-trieu-dong-cung-phan-khuc-honda-airblade-1-600x400.jpg" alt="Third slide" />
+                        <img class="d-block w-100" style={{ height: '472px', width: '616px' }}  src="images/yamaha-nvx-2021-co-gia-de-xuat-53-trieu-dong-cung-phan-khuc-honda-airblade-1-600x400.jpg" alt="Third slide" />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
+                  <Carousel
+                    swipeable={false}
+                    draggable={false}
+                    responsive={responsiveNews}
+                    ssr={true} // means to render carousel on server-side.
+                    infinite={true}
+                    autoPlaySpeed={1000}
+                    customTransition="all .5"
+                    transitionDuration={500}
+                    containerClass="carousel-container"
+                  >
+                    <div style={{position: 'relative'}}>
+                      <img class="d-block w-100" style={{ height: '472px', width: '616px', objectFit: 'cover' }} src="images/bo-chuyen-so-nhanh-quick-shifter-600x400.jpg" alt="First slide" />
+                      <p style={{position: 'absolute', bottom: '0px', left: '0px', margin: '0px', width: '100%',background: 'rgba(32,39,50,.8)', fontSize: '1.25rem', color: '#fff', fontWeight: '500', padding: '16px', lineHeight: '1.4'}}>Bộ chuyển số nhanh (Quick Shifter) và những điều cần biết</p>
+                    </div>
+
+                    <div style={{position: 'relative'}}>
+                    <img class="d-block w-100" style={{ height: '472px', width: '616px', objectFit: 'cover' }} src="images/ban-do-vario-bumblebee-125cc-dep-hang-dau-indonesia-nhin-ra-sao-1-600x400.jpeg" alt="Second slide" />
+                      <p style={{position: 'absolute', bottom: '0px', left: '0px', margin: '0px', width: '100%',background: 'rgba(32,39,50,.8)', fontSize: '1.25rem', color: '#fff', fontWeight: '500', padding: '16px', lineHeight: '1.4'}}>Bộ chuyển số nhanh (Quick Shifter) và những điều cần biết</p>
+                    </div>
+
+                    <div style={{position: 'relative'}}>
+                    <img class="d-block w-100" style={{ height: '472px', width: '616px', objectFit: 'cover' }} src="images/1595575287756L-768x576-1-600x400.jpg" alt="Third slide" />
+                      <p style={{position: 'absolute', bottom: '0px', left: '0px', margin: '0px', width: '100%',background: 'rgba(32,39,50,.8)', fontSize: '1.25rem', color: '#fff', fontWeight: '500', padding: '16px', lineHeight: '1.4'}}>Bộ chuyển số nhanh (Quick Shifter) và những điều cần biết</p>
+                    </div>
+
+                    <div style={{position: 'relative'}}>
+                    <img class="d-block w-100" style={{ height: '472px', width: '616px', objectFit: 'cover' }} src="images/yamaha-nvx-2021-co-gia-de-xuat-53-trieu-dong-cung-phan-khuc-honda-airblade-1-600x400.jpg" alt="Third slide" />
+                      <p style={{position: 'absolute', bottom: '0px', left: '0px', margin: '0px', width: '100%',background: 'rgba(32,39,50,.8)', fontSize: '1.25rem', color: '#fff', fontWeight: '500', padding: '16px', lineHeight: '1.4'}}>Bộ chuyển số nhanh (Quick Shifter) và những điều cần biết</p>
+                    </div>
+                  </Carousel>
                 </Col>
 
                 <Col lg={6} md={6} sm={6} xl={6} xs={6} style={{ height: '439px', padding: '0px' }}>
