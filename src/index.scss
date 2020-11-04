@@ -152,8 +152,8 @@ header {
   &>a {
     color: #fff;
     text-transform: uppercase;
-    font-size: 20px;
-    padding: 20px;
+    font-size: 14px;
+    padding: 14px;
     display: inline-block;
 
     &>span {
@@ -216,23 +216,6 @@ header {
     background: #fff
   }
 }
-.slider-social {
-  position: absolute;
-  bottom: 5%;
-  left: 10%;
-  z-index: 1;
-  li {
-    a {
-      color: #fff;
-      font-size: 2.5rem;
-      @include transition();
-
-      &:hover {
-        color: $orange;
-      }
-    }
-  }
-}
 
 .carousel-indicators li {
   border: 0px;
@@ -292,3 +275,15 @@ header {
 	}
 }
 /* ---End: Slider */
+
+.react-multi-carousel-dot-list {
+  display: none;
+}
+.btn:not(:disabled):not(.disabled) {
+color: #fff;
+}
+
+.nav .show > .nav-link, .nav .nav-link:hover:not(.disabled), .nav .nav-link.active {
+  background-color: #3699FF !important;
+  color: #fff;
+}

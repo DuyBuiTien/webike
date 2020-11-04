@@ -2,7 +2,7 @@ import React, {Suspense, lazy} from "react";
 import {Redirect, Switch, Route} from "react-router-dom";
 import {LayoutSplashScreen, ContentRoute} from "../_metronic/layout";
 import {BuilderPage} from "./pages/BuilderPage";
-// import {DashboardPage} from './modules/Header/pages/DashboardPage'
+import {DashboardPage} from './modules/Dashboard/DashboardPage'
 // const GoogleMaterialPage = lazy(() =>
 //   import("./modules/GoogleMaterialExamples/GoogleMaterialPage")
 // );
@@ -23,8 +23,7 @@ export default function BasePage() {
         <Suspense fallback={<LayoutSplashScreen/>}>
             <Switch>
                 {/* <ContentRoute path="/dashboard" component={DashboardPage}/> */}
-                <ContentRoute path="/" component={BuilderPage}/>
-                {/* <ContentRoute path="/" component={MapPage}/> */}
+                <ContentRoute path="/" component={DashboardPage}/>
                 {/* <Redirect to="error/error-v1"/> */}
             </Switch>
         </Suspense>
