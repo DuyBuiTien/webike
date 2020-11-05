@@ -1,0 +1,99 @@
+td {
+  border-bottom: 1px solid #e3e3e3;
+  font: 13px 'Roboto Regular', Arial, Helvetica, sans-serif;
+  padding: 8px 10px !important;
+  vertical-align: text-top;
+}
+
+label {
+  font-weight: 700;
+}
+
+.customer-info{
+  background-color: #019115;
+  border: 1px solid #019115;
+  color: #fff;
+  font-weight: 600;
+  line-height: 18px;
+  text-decoration: none;
+  text-align: center;
+  margin-right: 10px;
+  min-width: 255px;
+  height: 45px
+}
+
+.note-contact {
+  color: red;
+  margin: 0px;
+  padding: 5px 0 0 0;
+  font-style: italic;
+}
+
+.tab-content {
+  border: 1px solid #c9c8c8;
+  margin-top: 0px;
+  padding: 10px 15px;
+  font-size: 13px;
+}
+
+.detail-table table>tbody>tr:nth-child(odd) {
+  background-color: #ebebeb;
+}
+
+.detail-table table>tbody>tr>th {
+  font-weight: 700;
+  padding: 5px 10px;
+}
+
+.detail-table table>tbody>tr {
+  padding: 5px 10px !important;
+  height: 35px;
+  text-align: left;
+  font-family: Roboto Condensed,sans-serif;
+}
+
+.nav-item {
+  background: #fff;
+}
+h2{
+  font-family: Roboto Condensed,sans-serif;
+  font-weight: bold;
+}
+
+.btn-border{
+  color: #333;
+  border: 1px solid #e61e25;
+padding: 2px 10px;
+height: 22px;
+font-weight: 600;
+text-align: center;
+border-radius: 3px;
+vertical-align: top;
+display: flex;
+align-items: center;
+}
+.btn-border:hover{
+  color: #fff;
+  background-color: #e61e25;
+}
+.theodoi:hover {
+  color: #fff;
+  margin: 0px;
+}
+.theodoi{
+  margin: 0px;
+}
+.far .fa-heart:hover{
+color: #fff
+}
+.far .fa-heart {
+  color: #e61e25;
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+.customer-back {
+  padding: 10px 15px;
+  border: 2px dotted #ff9801;
+  background: #fbf2e3;
+}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Carousel, Button, Accordion, Card } from 'react-bootstrap';
+import { Row, Col, Carousel, Button, Accordion } from 'react-bootstrap';
 import { AutoComplete, Input } from 'antd';
 import { ShoppingCartOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import {useHistory} from 'react-router-dom';
@@ -7,7 +7,7 @@ import {useHistory} from 'react-router-dom';
 const { Option } = AutoComplete;
 const { Search } = Input;
 
-export function HeaderPage() {
+export function Header() {
   const history = useHistory();
   const [isSticky, setSticky] = useState(false);
   const handleScroll = () => {
@@ -76,35 +76,6 @@ export function HeaderPage() {
         </nav>
       </header>
       <div style={{ height: '12vh', backgroundColor: 'black' }}></div>
-
-      <div style={{ height: '80vh' }}>
-        <Carousel
-          nextIcon={<></>}
-          prevIcon={<></>}
-        >
-          <Carousel.Item>
-            <img
-              className="d-block w-100"
-              src="images/20200511_warehouse_clearance_1200_482.jpg"
-              alt="First slide"
-            />
-          </Carousel.Item>
-          <Carousel.Item>
-            <img
-              className="d-block w-100"
-              src="images/20200511_new_arrival_1200_482.jpg"
-              alt="Third slide"
-            />
-          </Carousel.Item>
-          <Carousel.Item>
-            <img
-              className="d-block w-100"
-              src="images/20200511_clothes_clearance_1200_482.jpg"
-              alt="Third slide"
-            />
-          </Carousel.Item>
-        </Carousel>
-      </div>
     </>
   )
 }
