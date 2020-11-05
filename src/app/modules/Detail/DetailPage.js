@@ -10,6 +10,10 @@ import './index.scss'
 export const DetailPage = () => {
   const [selected, setSelected] = useState('home')
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [])
+
   return (
     <>
       <Header />
@@ -24,13 +28,13 @@ export const DetailPage = () => {
             <Image style={{ width: '445px ', height: '334px !important' }} src="/images/23fe90dfb4f0333129fe786448925bf9.jpg"></Image>
 
             <div style={{ width: '100%', marginLeft: '1rem' }}>
-              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <p style={{ color: '#e61e25', fontWeight: 'bold' }}>170.500.000đ</p>
 
                 <a className="btn-border">
-                  <i class="far fa-heart" style={{color: '#e61e25', marginRight: '5px', fontSize: '14px'}}></i>
-              <p className='theodoi'>Theo dõi</p>
-              </a>
+                  <i class="far fa-heart" style={{ color: '#e61e25', marginRight: '5px', fontSize: '14px' }}></i>
+                  <p className='theodoi'>Theo dõi</p>
+                </a>
               </div>
               <div style={{ width: '100%', marginBottom: '10px', backgroundColor: '#f4f4f4', lineHeight: '20px' }}>
                 <table style={{ width: '100%' }}>

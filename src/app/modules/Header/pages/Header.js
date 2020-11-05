@@ -62,7 +62,6 @@ export function Header() {
               </div>
               <div className="d-flex flex-row">
                 <a
-                  onClick={() => history.push('/detail')}
                  style={{height: '38px', width: '100px', background: '#fff', borderRadius: '3px', fontWeight: '600', display :'flex', padding: '0 6px', alignItems: 'center', marginLeft: '1rem'}}>
                   <ShoppingCartOutlined style={{fontSize: '22px', marginRight: '4px'}}/>
                   Giỏ hàng

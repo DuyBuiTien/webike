@@ -231,22 +231,6 @@ export const DashboardPage = () => {
             <Card.Body>
               <Row >
                 <Col lg={6} md={6} sm={6} xl={6} xs={6} style={{ height: '472px', padding: '0px' }}>
-                  {/* <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel" data-interval="3000">
-                    <div class="carousel-inner">
-                      <div class="carousel-item active">
-                        <img class="d-block" style={{ height: '472px', width: '616px' }} src="images/bo-chuyen-so-nhanh-quick-shifter-600x400.jpg" alt="First slide" />
-                      </div>
-                      <div class="carousel-item">
-                        <img class="d-block w-100" style={{ height: '472px', width: '616px' }}  src="images/1595575287756L-768x576-1-600x400.jpg" alt="Second slide" />
-                      </div>
-                      <div class="carousel-item">
-                        <img class="d-block w-100" style={{ height: '472px', width: '616px' }}  src="images/ban-do-vario-bumblebee-125cc-dep-hang-dau-indonesia-nhin-ra-sao-1-600x400.jpeg" alt="Third slide" />
-                      </div>
-                      <div class="carousel-item">
-                        <img class="d-block w-100" style={{ height: '472px', width: '616px' }}  src="images/yamaha-nvx-2021-co-gia-de-xuat-53-trieu-dong-cung-phan-khuc-honda-airblade-1-600x400.jpg" alt="Third slide" />
-                      </div>
-                    </div>
-                  </div> */}
                   <Carousel
                     swipeable={false}
                     draggable={false}
@@ -258,22 +242,22 @@ export const DashboardPage = () => {
                     transitionDuration={500}
                     containerClass="carousel-container"
                   >
-                    <div style={{position: 'relative'}}>
+                    <div style={{position: 'relative', cursor: 'pointer'}}>
                       <img class="d-block w-100" style={{ height: '472px', width: '616px', objectFit: 'cover' }} src="images/bo-chuyen-so-nhanh-quick-shifter-600x400.jpg" alt="First slide" />
                       <p style={{position: 'absolute', bottom: '0px', left: '0px', margin: '0px', width: '100%',background: 'rgba(32,39,50,.8)', fontSize: '1.25rem', color: '#fff', fontWeight: '500', padding: '16px', lineHeight: '1.4'}}>Bộ chuyển số nhanh (Quick Shifter) và những điều cần biết</p>
                     </div>
 
-                    <div style={{position: 'relative'}}>
+                    <div style={{position: 'relative', cursor: 'pointer'}}>
                     <img class="d-block w-100" style={{ height: '472px', width: '616px', objectFit: 'cover' }} src="images/ban-do-vario-bumblebee-125cc-dep-hang-dau-indonesia-nhin-ra-sao-1-600x400.jpeg" alt="Second slide" />
                       <p style={{position: 'absolute', bottom: '0px', left: '0px', margin: '0px', width: '100%',background: 'rgba(32,39,50,.8)', fontSize: '1.25rem', color: '#fff', fontWeight: '500', padding: '16px', lineHeight: '1.4'}}>Bộ chuyển số nhanh (Quick Shifter) và những điều cần biết</p>
                     </div>
 
-                    <div style={{position: 'relative'}}>
+                    <div style={{position: 'relative', cursor: 'pointer'}}>
                     <img class="d-block w-100" style={{ height: '472px', width: '616px', objectFit: 'cover' }} src="images/1595575287756L-768x576-1-600x400.jpg" alt="Third slide" />
                       <p style={{position: 'absolute', bottom: '0px', left: '0px', margin: '0px', width: '100%',background: 'rgba(32,39,50,.8)', fontSize: '1.25rem', color: '#fff', fontWeight: '500', padding: '16px', lineHeight: '1.4'}}>Bộ chuyển số nhanh (Quick Shifter) và những điều cần biết</p>
                     </div>
 
-                    <div style={{position: 'relative'}}>
+                    <div style={{position: 'relative', cursor: 'pointer'}}>
                     <img class="d-block w-100" style={{ height: '472px', width: '616px', objectFit: 'cover' }} src="images/yamaha-nvx-2021-co-gia-de-xuat-53-trieu-dong-cung-phan-khuc-honda-airblade-1-600x400.jpg" alt="Third slide" />
                       <p style={{position: 'absolute', bottom: '0px', left: '0px', margin: '0px', width: '100%',background: 'rgba(32,39,50,.8)', fontSize: '1.25rem', color: '#fff', fontWeight: '500', padding: '16px', lineHeight: '1.4'}}>Bộ chuyển số nhanh (Quick Shifter) và những điều cần biết</p>
                     </div>
@@ -281,28 +265,28 @@ export const DashboardPage = () => {
                 </Col>
 
                 <Col lg={6} md={6} sm={6} xl={6} xs={6} style={{ height: '439px', padding: '0px' }}>
-                  <Card style={{ display: 'flex', flexDirection: 'row', padding: '16px' }}>
+                  <Card style={{ display: 'flex', flexDirection: 'row', padding: '16px', cursor: 'pointer' }}>
                     <Image style={{ width: '126px', height: '77px', objectFit: 'cover' }} src="images/bo-chuyen-so-nhanh-quick-shifter-600x400.jpg"></Image>
                     <div style={{ padding: '10px' }}>
                       <p>03/11/2020</p>
                       <p>Bộ chuyển số nhanh (Quick Shifter) và những điều cần biết</p>
                     </div>
                   </Card>
-                  <Card style={{ display: 'flex', flexDirection: 'row', padding: '16px' }}>
+                  <Card style={{ display: 'flex', flexDirection: 'row', padding: '16px', cursor: 'pointer' }}>
                     <Image style={{ width: '126px', height: '77px', objectFit: 'cover' }} src="images/bo-chuyen-so-nhanh-quick-shifter-600x400.jpg"></Image>
                     <div style={{ padding: '10px' }}>
                       <p>03/11/2020</p>
                       <p>Bộ chuyển số nhanh (Quick Shifter) và những điều cần biết</p>
                     </div>
                   </Card>
-                  <Card style={{ display: 'flex', flexDirection: 'row', padding: '16px' }}>
+                  <Card style={{ display: 'flex', flexDirection: 'row', padding: '16px', cursor: 'pointer' }}>
                     <Image style={{ width: '126px', height: '77px', objectFit: 'cover' }} src="images/bo-chuyen-so-nhanh-quick-shifter-600x400.jpg"></Image>
                     <div style={{ padding: '10px' }}>
                       <p>03/11/2020</p>
                       <p>Bộ chuyển số nhanh (Quick Shifter) và những điều cần biết</p>
                     </div>
                   </Card>
-                  <Card style={{ display: 'flex', flexDirection: 'row', padding: '16px' }}>
+                  <Card style={{ display: 'flex', flexDirection: 'row', padding: '16px', cursor: 'pointer' }}>
                     <Image style={{ width: '126px', height: '77px', objectFit: 'cover' }} src="images/bo-chuyen-so-nhanh-quick-shifter-600x400.jpg"></Image>
                     <div style={{ padding: '10px' }}>
                       <p>03/11/2020</p>

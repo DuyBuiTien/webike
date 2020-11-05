@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
 import { login } from "../_redux/authCrud";
+import {useHistory} from 'react-router-dom';
 
 /*
   INTL (i18n) docs:
@@ -24,6 +25,7 @@ const initialValues = {
 
 function Login(props) {
   const { intl } = props;
+  const history = useHistory();
   const [loading, setLoading] = useState(false);
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -112,12 +114,7 @@ function Login(props) {
             <div className="alert-text font-weight-bold">{formik.status}</div>
           </div>
         ) : (
-          <div className="mb-10 alert alert-custom alert-light-info alert-dismissible">
-            <div className="alert-text ">
-              Use account <strong>admin@demo.com</strong> and password{" "}
-              <strong>demo</strong> to continue.
-            </div>
-          </div>
+        <div></div>
         )}
 
         <div className="form-group fv-plugins-icon-container">
@@ -158,15 +155,16 @@ function Login(props) {
             className="text-dark-50 text-hover-primary my-3 mr-2"
             id="kt_login_forgot"
           >
-            <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
+            Quên mật khẩu?
           </Link>
           <button
             id="kt_login_signin_submit"
             type="submit"
             disabled={formik.isSubmitting}
             className={`btn btn-primary font-weight-bold px-9 py-4 my-3`}
+            onClick={() => {history.push('/home')}}
           >
-            <span>Sign In</span>
+            <span>Đăng nhập</span>
             {loading && <span className="ml-3 spinner spinner-white"></span>}
           </button>
         </div>
