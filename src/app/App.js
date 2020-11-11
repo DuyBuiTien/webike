@@ -19,7 +19,7 @@ export default function App({ store, persistor, basename }) {
         {/* Add high level `Suspense` in case if was not handled inside the React tree. */}
         <React.Suspense fallback={<LayoutSplashScreen />}>
           {/* Override `basename` (e.g: `homepage` in `package.json`) */}
-          <BrowserRouter basename={basename}>
+          <BrowserRouter>
             {/*This library only returns the location that has been active before the recent location change in the current window lifetime.*/}
             <MaterialThemeProvider>
               {/* Provide `react-intl` context synchronized with Redux state.  */}

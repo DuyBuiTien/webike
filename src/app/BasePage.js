@@ -5,6 +5,7 @@ import {BuilderPage} from "./pages/BuilderPage";
 import {DashboardPage} from './modules/Dashboard/DashboardPage';
 import {DetailPage} from './modules/Detail/DetailPage';
 import {AuthPage} from './modules/Auth/pages/AuthPage';
+import { CartPage } from './modules/Cart/CartPage';
 
 export default function BasePage() {
 
@@ -19,6 +20,7 @@ export default function BasePage() {
                 <Route path="/home" component={DashboardPage}/>
                 <Route path="/detail" component={DetailPage}/>
                 <Route path="/auth" component={AuthPage} />
+                <Route path="/cart" component={CartPage} />
                 {/* <ContentRoute path="/" component={MapPage}/> */}
                 {/* <Redirect to="error/error-v1"/> */}
                 <Redirect to="error/error-v1" />

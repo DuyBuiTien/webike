@@ -71,7 +71,7 @@ export const requestGET = async(URL) => {
         method: 'GET',
         url: URL,
         timeout: 15000,
-        withCredentials: true,
+        headers: { 'Access-Control-Allow-Origin': '*' }
     })
     .then(function (response) {
         return response.data
