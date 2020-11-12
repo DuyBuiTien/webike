@@ -8,12 +8,13 @@ import { Footer } from '../Footer/Footer'
 import Carousel from 'react-multi-carousel';
 import axios from 'axios';
 import 'react-multi-carousel/lib/styles.css';
-import { requestGET, GLOBAL_URL} from '../../pages/api/basicApi'
+import { requestGET, GLOBAL_URL} from '../../pages/api/basicApi';
+import {imageMotorItem} from './component/Image'
 
 export const DashboardPage = () => {
 
-  const [item, setItem] = useState([])
-  const [type, setType] = useState([])
+  const [item, setItem] = useState()
+  const [type, setType] = useState()
 
   const fetchItem = async () => {
     var data = await requestGET(`http://localhost:4000/motor`)
@@ -132,21 +133,11 @@ export const DashboardPage = () => {
               containerClass="carousel-container"
               itemClass="carousel-item-padding-50-px"
             >
-              <MotorItem img={'43eef218d2bfc024052f9686776c7157.jpg'} 
-              style={{ width: '20%', margin: '1.5%' }}
-              name={'Kawasaki'}></MotorItem>
-              <MotorItem img={'05e6b8dacd6e0b6bd6716ee0778b9c9f.jpg'}
-              name={'Honda CTX 1300 ABS'}
-              ></MotorItem>
-              <MotorItem img='d6abd1c50e684f8e787c56861a340995.jpg'
-                name={'Ducati 899 Panigale'}
-              ></MotorItem>
-              <MotorItem img={'b5475193452695a0d8fce764dc98ec74.jpg'}
-              name={'KTM Duke 390 2018'}
-              ></MotorItem>
-              <MotorItem img='185239317b0a7e46e7a45ed1c21f1078.jpeg'
-              name='Benelli'
-              ></MotorItem>
+              {
+                item!=undefined && item.map((i, index)=> (
+                  <MotorItem data={i} img={imageMotorItem[index % 5]} price={index*500000 + 500000}></MotorItem>
+                ))
+              }
             </Carousel>
 
 

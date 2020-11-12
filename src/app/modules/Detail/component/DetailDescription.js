@@ -1,10 +1,10 @@
 import React from 'react';
 import '../index.scss'
 
-export const DetailDescription = () => {
+export const DetailDescription = (props) => {
   return (
     <div className="tab-content col-10">
-      <p>Bán z800 xanh date 2015<br /></p>
+      <p>Bán {props.data.motorName+ ' ' + props.data.color + 'date ' + props.data.modelYear}<br /></p>
       <p>- HQCN biển số TP<br /></p>
       <p>- Máy móc keng zin, mạnh mẽ uy lực<br /></p>
       <p>- Phuộc trước sau không xì dầu chảy nhớt<br /></p>
@@ -19,8 +19,8 @@ export const DetailDescription = () => {
       <p>+ Che cạc te đồ chơi<br /></p>
       <p>---------------------------------------------<br /></p>
       <p> Liên hệ:  - Thiên trà Motor<br /></p>
-      <p> Có cà phê cho anh em giới thiệu thành công [​IMG][​IMG]<br /></p>
-      <p>Giá: 17xtr (Có gọi có fix) [​IMG][​IMG]<br /></p>
+      <p> Có cà phê cho anh em giới thiệu thành công<br /></p>
+      <p>Giá: 17xtr (Có gọi có fix)<br /></p>
       <p>Xem nhiều xe hơn tại: http://muabanmotor.com/<br /></p>
       <p>---------*------------*-----------*----------<br /></p>
       <p>Có hỗ trợ trả góp bằng thẻ Visa hoặc Master Card<br /></p>

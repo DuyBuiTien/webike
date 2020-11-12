@@ -2,17 +2,40 @@ import React, { useState, useEffect } from 'react';
 import { Header } from '../Header/pages/Header'
 import { Footer } from '../Footer/Footer';
 import { Row, Card, Image, Nav } from 'react-bootstrap';
+import {notification} from 'antd'
 import { DetailDescription } from './component/DetailDescription';
 import { DetailSpecification } from './component/DetailSpecification';
+import {useHistory} from 'react-router-dom';
+import {requestPOST, GLOBAL_URL} from '../../../app/pages/api/basicApi'
 
 import './index.scss'
 
-export const DetailPage = () => {
+export const DetailPage = (props) => {
   const [selected, setSelected] = useState('home')
+  const history = useHistory()
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [])
+
+  const handleAddCart = async() => {  
+    var data = await requestPOST(`${GLOBAL_URL}/cart`, {
+      userId: 1001,
+      motorId: props.location.state.data.motorId,
+      quantity: 1
+    })
+    if(data) {
+      history.push('/cart', { img: props.location.state.img })
+      console.log(props.location.state.img)
+    }
+    else {
+      notification['error']({
+        message: 'Xảy ra lỗi',
+        description:
+          'Bạn không thể thêm sản phẩm này vào giỏ hàng',
+      });
+    }
+  }
 
   return (
     <>
@@ -21,17 +44,19 @@ export const DetailPage = () => {
         <Card className="col-10">
           <Card.Header style={{ padding: '0px', margin: '35px 0 0 0', borderBottom: '2px solid #e61e25', fontWeight: '700', fontSize: '20px' }}>
             <div>
-              <p>Bán Kawasaki Z800 ABS BSTP</p>
+              <p>{props.location.state.data.motorName}</p>
             </div>
           </Card.Header>
           <Card.Body className="d-flex flex-row" style={{ padding: '30px 00px' }}>
-            <Image style={{ width: '445px ', height: '334px !important' }} src="/images/23fe90dfb4f0333129fe786448925bf9.jpg"></Image>
+            <Image style={{ width: '445px ', height: '334px !important' }} src={props.location.state.img}></Image>
 
             <div style={{ width: '100%', marginLeft: '1rem' }}>
               <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <p style={{ color: '#e61e25', fontWeight: 'bold' }}>170.500.000đ</p>
 
-                <a className="btn-border">
+                <a className="btn-border"
+                  onClick={() => handleAddCart()}
+                >
                   <i class="far fa-heart" style={{ color: '#e61e25', marginRight: '5px', fontSize: '14px' }}></i>
                   <p className='theodoi'>Theo dõi</p>
                 </a>
@@ -44,7 +69,7 @@ export const DetailPage = () => {
                         <label>Dòng xe</label>
                       </td>
                       <td width={"30%"}>
-                        Kawasaki Z800 ABS 2015
+                        {props.location.state.data.motorName}
                   </td>
                       <td width={"15%"}>
                         <label>Đã đi</label>
@@ -65,7 +90,7 @@ export const DetailPage = () => {
                         <label>Đời xe</label>
                       </td>
                       <td width={"37%"}>
-                        2015
+                        {props.location.state.data.modelYear}
                     </td>
                     </tr>
 
@@ -89,7 +114,7 @@ export const DetailPage = () => {
                         <label  >Màu</label>
                       </td>
                       <td width={"30%"}>
-                        Đen đậm Xanh lá
+                       {props.location.state.data.color}
                   </td>
                       <td width={"15%"}>
                         <label  >Địa điểm</label>
@@ -104,7 +129,7 @@ export const DetailPage = () => {
                         <label  >Ngày đăng</label>
                       </td>
                       <td width={"30%"}>
-                        14 giờ trước
+                        2 ngày trước
                   </td>
                     </tr>
                   </tbody>
@@ -141,8 +166,8 @@ export const DetailPage = () => {
       </Row>
 
       <Row className="d-flex justify-content-center mb-5">
-        {(selected === 'home' && <DetailDescription className="col-10" />) ||
-          (selected === 'link-1' && <DetailSpecification className="col-10" />)}
+        {(selected === 'home' && <DetailDescription className="col-10" data={props.location.state.data}/>) ||
+          (selected === 'link-1' && <DetailSpecification className="col-10" data={props.location.state.data}/>)}
       </Row>
       <Footer />
     </>

@@ -1,0 +1,11 @@
+
+.MuiFormLabel-root .MuiInputLabel-root .MuiInputLabel-formControl .MuiInputLabel-animated .MuiInputLabel-outlined {
+  position: absolute;
+  top: -1rem;
+}
+.MuiAutocomplete-hasPopupIcon .MuiAutocomplete-inputRoot[class*="MuiOutlinedInput-root"], .MuiAutocomplete-hasClearIcon .MuiAutocomplete-inputRoot[class*="MuiOutlinedInput-root"] {
+  height: 2rem;
+}
+.MuiInputLabel-formControl {
+  top: -1rem !important;
+}

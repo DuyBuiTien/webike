@@ -91,6 +91,11 @@ function Login(props) {
     },
   });
 
+  const handleLogin = () => {
+    localStorage.setItem('login', true)
+    history.push('/home')
+  }
+
   return (
     <div className="login-form login-signin" id="kt_login_signin_form">
       {/* begin::Head */}
@@ -162,7 +167,7 @@ function Login(props) {
             type="submit"
             disabled={formik.isSubmitting}
             className={`btn btn-primary font-weight-bold px-9 py-4 my-3`}
-            onClick={() => {history.push('/home')}}
+            onClick={() => {handleLogin()}}
           >
             <span>Đăng nhập</span>
             {loading && <span className="ml-3 spinner spinner-white"></span>}

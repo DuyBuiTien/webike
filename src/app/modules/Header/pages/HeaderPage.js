@@ -1,16 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Carousel, Button, Accordion, Card } from 'react-bootstrap';
-import { AutoComplete, Input } from 'antd';
 import { ShoppingCartOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { requestGET, GLOBAL_URL } from '../../../pages/api/basicApi';
+import './style.scss';
+import { imageMotorItem } from '../../Dashboard/component/Image'
 
-const { Option } = AutoComplete;
-const { Search } = Input;
 
 export function HeaderPage() {
   const history = useHistory();
   const [isSticky, setSticky] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+  const [item, setItem] = useState();
+
+  const fetchItem = async () => {
+    var data = await requestGET(`http://localhost:4000/motor`)
+    setItem(data)
+  }
+
+  useEffect(() => {
+    fetchItem();
+    var data = localStorage.getItem('login')
+    setIsLogin(data)
+  }, [isLogin])
+
   const handleScroll = () => {
     const offset = window.scrollY;
     if (offset >= 100) {
@@ -29,6 +44,15 @@ export function HeaderPage() {
     history.push('/cart')
   }
 
+  const handleSearch = (value) => {
+    var arr = []
+    item && item.map((i, index) => {
+      if (i.motorName === value) {
+        arr.push(i)
+        history.push('/detail', { data: i, img: imageMotorItem[index % 5] })
+      }
+    })
+  }
   return (
     <>
       <header className={`row mx-0 fixed-top ${isSticky ? 'fixed' : ''}`}>
@@ -53,10 +77,16 @@ export function HeaderPage() {
                 <li><a>Đại lý</a></li>
               </ul>
               <div className="input-group input-group-sm" style={{ width: '30rem', marginBottom: '1rem', marginLeft: '27px' }}>
-                <input type="text" className="form-control" placeholder="Nhập tên xe tìm kiếm" aria-label="Dollar amount (with dot and two decimal places)" />
-                <div className="input-group-append">
-                  <span className="input-group-text"><i className="fas fa-search"></i></span>
-                </div>
+                <Autocomplete
+                  id="free-solo-demo"
+                  style={{ width: '30rem', height: '2rem', position: 'relative' }}
+                  freeSolo
+                  options={item && item.map((option) => option.motorName)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Nhập tên xe cần tìm" margin="normal" variant="outlined" style={{ position: 'absolute', top: '-1rem', backgroundColor: '#fff', borderRadius: '5px' }} />
+                  )}
+                  onChange={(event, value, reason) => handleSearch(value)}
+                />
               </div>
             </Col>
 
@@ -65,13 +95,20 @@ export function HeaderPage() {
                 <i className="fab fa-facebook-f" style={{ margin: '1rem', cursor: 'pointer' }}></i>
                 <i className="fab fa-youtube" style={{ margin: '1rem', cursor: 'pointer' }}></i>
                 {
-                  isLogin && <></> ||
-                  !isLogin && <div className="accordion w-50px" id="accordionExample" onClick={() => history.push('/auth')}>
+                  isLogin === 'true' && <div className="accordion w-50px" id="accordionExample" onClick={() => history.push('/auth')}>
                     <p className="mb-0 w-50px">
                       <button className="btn btn-link" type="button">
-                        Đăng nhập</button>
+                        Admin</button>
                     </p>
-                  </div>
+                  </div> 
+                }
+                {
+                  isLogin === 'false' && <div className="accordion w-50px" id="accordionExample" onClick={() => history.push('/auth')}>
+                      <p className="mb-0 w-50px">
+                        <button className="btn btn-link" type="button">
+                    Đăng nhập</button>
+                      </p>
+                    </div>
                 }
               </div>
               <div className="d-flex flex-row">

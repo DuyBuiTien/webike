@@ -7,7 +7,6 @@ export const ItemType = (props) => {
   const history = useHistory()
   return (
     <a
-      onClick={() => history.push('/detail')} 
       style={{ padding: '4px 8px 8px', display: 'block', borderRadius: '12px', textAlign: 'center', height: '130px' }} 
       className="div-item-para">
       <figure style={{ width: '90px', height: '90px', margin: '0px auto' }}>

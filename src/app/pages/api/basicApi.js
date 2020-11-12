@@ -20,7 +20,7 @@ export const requestGET = async (URL) => {
     })
 }
 export const requestPOST = async (URL, data) => {
-  return await axios({
+  return await instance({
     method: 'POST',
     url: URL,
     data: data,
@@ -36,7 +36,7 @@ export const requestPOST = async (URL, data) => {
     })
 }
 export const requestDELETE = async (URL, data) => {
-  return await axios({
+  return await instance({
     method: 'DELETE',
     url: URL,
     data: data,

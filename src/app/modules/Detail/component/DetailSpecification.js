@@ -1,10 +1,10 @@
 import React from 'react';
 import '../index.scss'
 
-export const DetailSpecification = () => {
+export const DetailSpecification = (props) => {
   return (
     <div className="d-flex flex-column col-10 detail-table tab-content" style={{ backgroundColor: '#fff' }}>
-      <h2 style={{ textAlign: 'center', marginBottom: '0.75rem', marginTop: '1.5rem' }}>Thông số kỹ thuật của &quot;Z800 ABS 2015&quot;</h2>
+      <h2 style={{ textAlign: 'center', marginBottom: '0.75rem', marginTop: '1.5rem' }}>Thông số kỹ thuật của &quot;{props.data.motorName}&quot;</h2>
       <table border="0">
         <tbody>
           <tr>

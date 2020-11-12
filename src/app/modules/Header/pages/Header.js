@@ -1,15 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Carousel, Button, Accordion } from 'react-bootstrap';
-import { AutoComplete, Input } from 'antd';
 import { ShoppingCartOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import {useHistory} from 'react-router-dom';
-
-const { Option } = AutoComplete;
-const { Search } = Input;
+import { useHistory } from 'react-router-dom';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { requestGET, GLOBAL_URL } from '../../../pages/api/basicApi';
+import './style.scss';
 
 export function Header() {
   const history = useHistory();
   const [isSticky, setSticky] = useState(false);
+  const [item, setItem] = useState();
+  const [isLogin, setIsLogin] = useState(false);
+
+  const fetchItem = async () => {
+    var data = await requestGET(`http://localhost:4000/motor`)
+    setItem(data)
+  }
+
+  useEffect(() => {
+    var data = localStorage.getItem('login')
+    fetchItem();
+    setIsLogin(data)
+  }, [])
+
   const handleScroll = () => {
     const offset = window.scrollY;
     if (offset >= 100) {
@@ -47,21 +61,43 @@ export function Header() {
                 <li><a>Đại lý</a></li>
               </ul>
               <div class="input-group input-group-sm" style={{ width: '30rem', marginBottom: '1rem', marginLeft:'27px' }}>
-                <input type="text" class="form-control" placeholder="Nhập tên xe tìm kiếm" aria-label="Dollar amount (with dot and two decimal places)" />
-                <div class="input-group-append">
-                  <span class="input-group-text"><i class="fas fa-search"></i></span>
-                </div>
+                <Autocomplete
+                  id="free-solo-demo"
+                  style={{ width: '30rem', height: '2rem', position: 'relative' }}
+                  freeSolo
+                  options={item && item.map((option) => option.motorName)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Nhập tên xe cần tìm" margin="normal" variant="outlined" style={{ position: 'absolute', top: '-1rem', backgroundColor: '#fff', borderRadius: '5px' }} />
+                  )}
+                  
+                />  
               </div>
-            </Col>
+            </Col>  
 
             <Col lg={3 } md={3} sm={3} xl={3} xs={3} className="d-flex flex-column">
-              <div style={{marginLeft: '1rem'}}>
+              <div style={{marginLeft: '1rem', display: 'flex', flexDirection: 'row'}}>
                 <i class="fab fa-facebook-f" style={{margin: '1rem', cursor: 'pointer'}}></i>
                 <i class="fab fa-youtube" style={{ margin: '1rem', cursor: 'pointer' }}></i>
-                <Accordion.Toggle as={Button} variant="link" color="#fff">Đăng nhập</Accordion.Toggle>
+                {
+                  isLogin === 'true' && <div className="accordion w-50px" id="accordionExample" onClick={() => history.push('/auth')}>
+                    <p className="mb-0 w-50px">
+                      <button className="btn btn-link" type="button">
+                        Admin</button>
+                    </p>
+                  </div>
+                }
+                {
+                  isLogin === 'false' && <div className="accordion w-50px" id="accordionExample" onClick={() => history.push('/auth')}>
+                    <p className="mb-0 w-50px">
+                      <button className="btn btn-link" type="button">
+                        Đăng nhập</button>
+                    </p>
+                  </div>
+                }
               </div>
               <div className="d-flex flex-row">
                 <a
+                  onClick={() => history.push('/cart')}
                  style={{height: '38px', width: '100px', background: '#fff', borderRadius: '3px', fontWeight: '600', display :'flex', padding: '0 6px', alignItems: 'center', marginLeft: '1rem'}}>
                   <ShoppingCartOutlined style={{fontSize: '22px', marginRight: '4px'}}/>
                   Giỏ hàng
