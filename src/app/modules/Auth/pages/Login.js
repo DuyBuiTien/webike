@@ -6,7 +6,8 @@ import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
 import { login } from "../_redux/authCrud";
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { requestGET, GLOBAL_URL } from '../../../pages/api/basicApi'
 
 /*
   INTL (i18n) docs:
@@ -18,12 +19,16 @@ import {useHistory} from 'react-router-dom';
   https://jaredpalmer.com/formik/docs/tutorial#getfieldprops
 */
 
-const initialValues = {
-  email: "admin@demo.com",
-  password: "demo",
-};
+// const initialValues = {
+//   email: "admin@demo.com",
+//   password: "demo",
+// };
+
+localStorage.setItem('login', false)
 
 function Login(props) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const { intl } = props;
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -68,7 +73,7 @@ function Login(props) {
   };
 
   const formik = useFormik({
-    initialValues,
+    // initialValues,
     validationSchema: LoginSchema,
     onSubmit: (values, { setStatus, setSubmitting }) => {
       enableLoading();
@@ -91,9 +96,19 @@ function Login(props) {
     },
   });
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    var a = await checkIsValid()
     localStorage.setItem('login', true)
-    history.push('/home')
+    localStorage.setItem('userId', a[0].userId)
+    localStorage.setItem('userName', a[0].userName)
+    history.push('/')
+  }
+
+  const checkIsValid = () => {
+    return new Promise(async (res, reject) => {
+      var data = await requestGET(`${GLOBAL_URL}/user/${username}/${username}`)
+      res(data)
+    })
   }
 
   return (
@@ -111,7 +126,7 @@ function Login(props) {
 
       {/*begin::Form*/}
       <form
-        onSubmit={formik.handleSubmit}
+        // onSubmit={formik.handleSubmit}
         className="form fv-plugins-bootstrap fv-plugins-framework"
       >
         {formik.status ? (
@@ -119,8 +134,8 @@ function Login(props) {
             <div className="alert-text font-weight-bold">{formik.status}</div>
           </div>
         ) : (
-        <div></div>
-        )}
+            <div></div>
+          )}
 
         <div className="form-group fv-plugins-icon-container">
           <input
@@ -130,7 +145,9 @@ function Login(props) {
               "email"
             )}`}
             name="email"
-            {...formik.getFieldProps("email")}
+            value={username}
+            onInput={(value) => setUsername(value.target.value)}
+          // {...formik.getFieldProps("email")}
           />
           {formik.touched.email && formik.errors.email ? (
             <div className="fv-plugins-message-container">
@@ -146,7 +163,9 @@ function Login(props) {
               "password"
             )}`}
             name="password"
-            {...formik.getFieldProps("password")}
+            value={password}
+            onInput={(value) => setPassword(value.target.value)}
+          // {...formik.getFieldProps("password")}
           />
           {formik.touched.password && formik.errors.password ? (
             <div className="fv-plugins-message-container">
@@ -167,7 +186,7 @@ function Login(props) {
             type="submit"
             disabled={formik.isSubmitting}
             className={`btn btn-primary font-weight-bold px-9 py-4 my-3`}
-            onClick={() => {handleLogin()}}
+            onClick={() => { handleLogin() }}
           >
             <span>Đăng nhập</span>
             {loading && <span className="ml-3 spinner spinner-white"></span>}

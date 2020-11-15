@@ -1,14 +1,15 @@
 import React from 'react';
 import { Card, Image, Button } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 export const MotorItem = (props) => {
-  const history = useHistory()
+  const history = useHistory();
+  const location = useLocation();
   return (
     <>
       <Card style={{ margin: '5px', cursor: 'pointer' }}
         onClick={() => history.push('/detail', { data: props.data, img: props.img })}>
-        <Card.Img variant="top" src={props.img} />
+        <Card.Img variant="top" src={`/images/${props.data.imageUrl}`} style={{width: '231px', height: '174px'}} />
         <Card.Body style={{ padding: '0px', marginTop: '10px', marginBottom: '10px', marginRight: '5px' }}>
           <Card.Title style={{ margin: '0px', paddingLeft: '5px' }}>{props.data.motorName}</Card.Title>
           <Card.Text style={{ padding: '0px', margin: '0', paddingLeft: '5px' }}>

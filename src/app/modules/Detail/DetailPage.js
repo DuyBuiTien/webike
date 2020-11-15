@@ -2,31 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { Header } from '../Header/pages/Header'
 import { Footer } from '../Footer/Footer';
 import { Row, Card, Image, Nav } from 'react-bootstrap';
-import {notification} from 'antd'
+import { notification } from 'antd'
 import { DetailDescription } from './component/DetailDescription';
 import { DetailSpecification } from './component/DetailSpecification';
-import {useHistory} from 'react-router-dom';
-import {requestPOST, GLOBAL_URL} from '../../../app/pages/api/basicApi'
+import { useHistory } from 'react-router-dom';
+import { requestPOST, GLOBAL_URL } from '../../../app/pages/api/basicApi'
 
 import './index.scss'
 
 export const DetailPage = (props) => {
   const [selected, setSelected] = useState('home')
-  const history = useHistory()
+  const history = useHistory();
+  var userId = localStorage.getItem('userId')
+  var userName = localStorage.getItem('userName')
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [])
 
-  const handleAddCart = async() => {  
+  const handleAddCart = async () => {
     var data = await requestPOST(`${GLOBAL_URL}/cart`, {
-      userId: 1001,
+      userId: userId,
       motorId: props.location.state.data.motorId,
       quantity: 1
     })
-    if(data) {
-      history.push('/cart', { img: props.location.state.img })
-      console.log(props.location.state.img)
+    if (data) {
+      history.push('/cart', { img: props.location.state.img, data: props.location.state.data})
     }
     else {
       notification['error']({
@@ -48,7 +49,7 @@ export const DetailPage = (props) => {
             </div>
           </Card.Header>
           <Card.Body className="d-flex flex-row" style={{ padding: '30px 00px' }}>
-            <Image style={{ width: '445px ', height: '334px !important' }} src={props.location.state.img}></Image>
+            <Image style={{ width: '445px ', height: '334px !important' }} src={`/images/${props.location.state.data.imageUrl}`}></Image>
 
             <div style={{ width: '100%', marginLeft: '1rem' }}>
               <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -70,7 +71,7 @@ export const DetailPage = (props) => {
                       </td>
                       <td width={"30%"}>
                         {props.location.state.data.motorName}
-                  </td>
+                      </td>
                       <td width={"15%"}>
                         <label>Đã đi</label>
                       </td>
@@ -91,7 +92,7 @@ export const DetailPage = (props) => {
                       </td>
                       <td width={"37%"}>
                         {props.location.state.data.modelYear}
-                    </td>
+                      </td>
                     </tr>
 
                     <tr>
@@ -114,8 +115,8 @@ export const DetailPage = (props) => {
                         <label  >Màu</label>
                       </td>
                       <td width={"30%"}>
-                       {props.location.state.data.color}
-                  </td>
+                        {props.location.state.data.color}
+                      </td>
                       <td width={"15%"}>
                         <label  >Địa điểm</label>
                       </td>
@@ -166,8 +167,8 @@ export const DetailPage = (props) => {
       </Row>
 
       <Row className="d-flex justify-content-center mb-5">
-        {(selected === 'home' && <DetailDescription className="col-10" data={props.location.state.data}/>) ||
-          (selected === 'link-1' && <DetailSpecification className="col-10" data={props.location.state.data}/>)}
+        {(selected === 'home' && <DetailDescription className="col-10" data={props.location.state.data} />) ||
+          (selected === 'link-1' && <DetailSpecification className="col-10" data={props.location.state.data} />)}
       </Row>
       <Footer />
     </>

@@ -11,7 +11,7 @@ import 'react-multi-carousel/lib/styles.css';
 import { requestGET, GLOBAL_URL} from '../../pages/api/basicApi';
 import {imageMotorItem} from './component/Image'
 
-export const DashboardPage = () => {
+export const DashboardPage = (props) => {
 
   const [item, setItem] = useState()
   const [type, setType] = useState()
@@ -30,9 +30,6 @@ export const DashboardPage = () => {
     fetchItem()
     fetchType()
   }, [])
-
-  console.log(item)
-  console.log(type)
 
   const responsive = {
     desktop: {

@@ -14,6 +14,8 @@ export function HeaderPage() {
   const [isSticky, setSticky] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [item, setItem] = useState();
+  const [userId, setUserId] = useState();
+  const [userName, setUserName] = useState();
 
   const fetchItem = async () => {
     var data = await requestGET(`http://localhost:4000/motor`)
@@ -23,8 +25,12 @@ export function HeaderPage() {
   useEffect(() => {
     fetchItem();
     var data = localStorage.getItem('login')
+    var userId = localStorage.getItem('userId')
+    var userName = localStorage.getItem('userName')
     setIsLogin(data)
-  }, [isLogin])
+    setUserId(userId)
+    setUserName(userName)
+  }, [isLogin, userId])
 
   const handleScroll = () => {
     const offset = window.scrollY;
@@ -49,7 +55,7 @@ export function HeaderPage() {
     item && item.map((i, index) => {
       if (i.motorName === value) {
         arr.push(i)
-        history.push('/detail', { data: i, img: imageMotorItem[index % 5] })
+        history.push('/detail', { data: i, img: imageMotorItem[index % 5]})
       }
     })
   }
@@ -59,7 +65,7 @@ export function HeaderPage() {
         <nav className="container px-0 navbar-light navbar navbar-expand-lg">
           <Row style={{ width: '100%' }}>
             <Col lg={3} md={3} sm={3} xl={3} xs={3} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <a className="navbar-brand" onClick={() => history.push('/')}>
+              <a className="navbar-brand">
                 <img src="images/logo.png" alt="Tripbricks" className="img-fluid head-logo" style={{ fontSize: '0.87rem', width: '15rem', height: 'auto' }} />
               </a>
               <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,17 +104,17 @@ export function HeaderPage() {
                   isLogin === 'true' && <div className="accordion w-50px" id="accordionExample" onClick={() => history.push('/auth')}>
                     <p className="mb-0 w-50px">
                       <button className="btn btn-link" type="button">
-                        Admin</button>
+                        {userName}</button>
                     </p>
-                  </div> 
+                  </div>
                 }
                 {
                   isLogin === 'false' && <div className="accordion w-50px" id="accordionExample" onClick={() => history.push('/auth')}>
-                      <p className="mb-0 w-50px">
-                        <button className="btn btn-link" type="button">
-                    Đăng nhập</button>
-                      </p>
-                    </div>
+                    <p className="mb-0 w-50px">
+                      <button className="btn btn-link" type="button">
+                        Đăng nhập</button>
+                    </p>
+                  </div>
                 }
               </div>
               <div className="d-flex flex-row">

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Carousel, Button, Accordion } from 'react-bootstrap';
 import { ShoppingCartOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { requestGET, GLOBAL_URL } from '../../../pages/api/basicApi';
@@ -9,9 +9,12 @@ import './style.scss';
 
 export function Header() {
   const history = useHistory();
+  const location = useLocation();
   const [isSticky, setSticky] = useState(false);
   const [item, setItem] = useState();
   const [isLogin, setIsLogin] = useState(false);
+  const [userId, setUserId] = useState();
+  const [userName, setUserName] = useState();
 
   const fetchItem = async () => {
     var data = await requestGET(`http://localhost:4000/motor`)
@@ -20,8 +23,12 @@ export function Header() {
 
   useEffect(() => {
     var data = localStorage.getItem('login')
+    var userId = localStorage.getItem('userId')
+    var userName = localStorage.getItem('userName')
     fetchItem();
     setIsLogin(data)
+    setUserId(userId)
+    setUserName(userName)
   }, [])
 
   const handleScroll = () => {
@@ -82,7 +89,7 @@ export function Header() {
                   isLogin === 'true' && <div className="accordion w-50px" id="accordionExample" onClick={() => history.push('/auth')}>
                     <p className="mb-0 w-50px">
                       <button className="btn btn-link" type="button">
-                        Admin</button>
+                        {userName}</button>
                     </p>
                   </div>
                 }
